@@ -1,0 +1,2 @@
+include ':Demo', ':PayPal'
+rootProject.name='PayPal SDK'
