@@ -1,4 +1,4 @@
-package com.paypal.paypal;
+package com.paypal.api;
 
 import android.content.Context;
 
