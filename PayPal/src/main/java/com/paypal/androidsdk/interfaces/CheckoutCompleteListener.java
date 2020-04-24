@@ -1,7 +1,7 @@
-package com.paypal.api.interfaces;
+package com.paypal.androidsdk.interfaces;
 
 import com.braintreepayments.api.interfaces.BraintreeListener;
-import com.paypal.api.models.CheckoutResult;
+import com.paypal.androidsdk.models.CheckoutResult;
 
 /**
  * OPTION 2: one listener

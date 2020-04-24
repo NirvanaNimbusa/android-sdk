@@ -1,4 +1,4 @@
-package com.paypal.api;
+package com.paypal.androidsdk;
 
 import android.util.Log;
 
@@ -11,11 +11,11 @@ import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.paypal.api.interfaces.APIClientCallback;
-import com.paypal.api.interfaces.CheckoutCompleteListener;
-import com.paypal.api.models.CheckoutResult;
+import com.paypal.androidsdk.interfaces.APIClientCallback;
+import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
+import com.paypal.androidsdk.models.CheckoutResult;
 
-public class APIClient implements PaymentMethodNonceCreatedListener, BraintreeErrorListener {
+public class APIClient  {
 
     private String mUAT;
     private CheckoutCompleteListener mCheckoutCompleteListener;
@@ -51,18 +51,6 @@ public class APIClient implements PaymentMethodNonceCreatedListener, BraintreeEr
         // Step 3 - check for contingency
 
         // Step 4 - handle result
-        callback.onCheckoutComplete(new CheckoutResult("order-id", CheckoutResult.CheckoutType.CARD));
+//        callback.onCheckoutComplete(new CheckoutResult("order-id", CheckoutResult.CheckoutType.CARD));
     }
-
-    @Override
-    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-        // TODO: - Why isn't this being called?
-        Log.d("*** NONCE: ", paymentMethodNonce.toString());
-    }
-
-    @Override
-    public void onError(Exception error) {
-        Log.d("No nonce.", "");
-    }
-
 }

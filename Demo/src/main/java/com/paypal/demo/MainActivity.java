@@ -2,17 +2,19 @@ package com.paypal.demo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.paypal.api.*;
-import com.paypal.api.interfaces.APIClientCallback;
-import com.paypal.api.interfaces.CheckoutCompleteListener;
-import com.paypal.api.models.CheckoutResult;
+import com.braintreepayments.api.interfaces.BraintreeErrorListener;
+import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
+import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.paypal.androidsdk.*;
+import com.paypal.androidsdk.interfaces.APIClientCallback;
+import com.paypal.androidsdk.models.CheckoutResult;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, PaymentMethodNonceCreatedListener, BraintreeErrorListener {
 
     private APIClient ppAPIClient;
     private Button mSubmitCardButtom;
@@ -51,4 +53,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    @Override
+    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
+        // TODO: - Why isn't this being called?
+        Log.d("*** NONCE: ", paymentMethodNonce.toString());
+    }
+
+    @Override
+    public void onError(Exception error) {
+        Log.d("No nonce.", "");
+    }
 }

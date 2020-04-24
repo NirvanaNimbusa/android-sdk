@@ -1,6 +1,6 @@
-package com.paypal.api.interfaces;
+package com.paypal.androidsdk.interfaces;
 
-import com.paypal.api.models.CheckoutResult;
+import com.paypal.androidsdk.models.CheckoutResult;
 
 /**
  * OPTION 1: Callbacks

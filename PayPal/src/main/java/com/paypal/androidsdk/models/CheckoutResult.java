@@ -1,4 +1,4 @@
-package com.paypal.api.models;
+package com.paypal.androidsdk.models;
 
 public class CheckoutResult {
 
