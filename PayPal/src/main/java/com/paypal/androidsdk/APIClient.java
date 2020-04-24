@@ -1,21 +1,15 @@
 package com.paypal.androidsdk;
 
-import android.util.Log;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.Card;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.interfaces.BraintreeErrorListener;
-import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.CardBuilder;
-import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.paypal.androidsdk.interfaces.APIClientCallback;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
-import com.paypal.androidsdk.models.CheckoutResult;
 
-public class APIClient  {
+public class APIClient {
 
     private String mUAT;
     private CheckoutCompleteListener mCheckoutCompleteListener;

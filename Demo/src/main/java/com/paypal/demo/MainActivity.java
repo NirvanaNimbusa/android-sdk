@@ -14,7 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, PaymentMethodNonceCreatedListener, BraintreeErrorListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+        PaymentMethodNonceCreatedListener, BraintreeErrorListener {
 
     private APIClient ppAPIClient;
     private Button mSubmitCardButtom;
