@@ -6,7 +6,7 @@ import com.paypal.androidsdk.models.CheckoutResult;
 /**
  * OPTION 2: one listener
  */
-public interface CheckoutCompleteListener extends BraintreeListener {
+public interface CheckoutCompleteListener {
 
     void onCheckoutComplete(CheckoutResult result);
 

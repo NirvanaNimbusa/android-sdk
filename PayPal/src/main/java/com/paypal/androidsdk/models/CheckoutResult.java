@@ -16,4 +16,6 @@ public class CheckoutResult {
         mCheckoutType = checkoutType;
     }
 
+    public String getOrderID() { return mOrderID; }
+
 }
