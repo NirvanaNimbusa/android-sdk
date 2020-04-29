@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">PayPal SDK</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="merchant_account_settings">Merchant Account Settings</string>
+
+    <!-- Value Preferences -->
+    <string name="environment_preference">Environment</string>
+    <string name="country_preference">Country</string>
+
 </resources>

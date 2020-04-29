@@ -1,0 +1,25 @@
+<resources>
+
+    <!-- environments-->
+    <string-array name="environment_entries">
+        <item>Production</item>
+        <item>Sandbox</item>
+    </string-array>
+
+    <string-array name="environment_values">
+        <item>sandbox</item>
+        <item>production</item>
+    </string-array>
+
+    <!-- countries-->
+    <string-array name="country_entries">
+        <item>US</item>
+        <item>UK</item>
+    </string-array>
+
+    <string-array name="country_values">
+    <item>us</item>
+    <item>uk</item>
+    </string-array>
+
+</resources>

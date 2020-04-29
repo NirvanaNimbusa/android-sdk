@@ -1,11 +1,15 @@
 package com.paypal.androidsdk;
 
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.Card;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.braintreepayments.api.interfaces.PaymentMethodNonceCallback;
 import com.braintreepayments.api.models.CardBuilder;
+import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
 import com.paypal.androidsdk.models.CheckoutResult;
 
@@ -29,7 +33,7 @@ public class APIClient {
     public void checkoutWithCard(final String orderID, final CardBuilder cardBuilder) {
 
         // Step 1 - tokenize
-        CardBuilder newCardBuilder = new CardBuilder()
+        CardBuilder testCardBuilder = new CardBuilder()
                 .cardholderName("Suzie Smith")
                 .cardNumber("4111111111111111")
                 .expirationMonth("01")
@@ -37,7 +41,20 @@ public class APIClient {
                 .cvv("123")
                 .postalCode("12345");
 
-        Card.tokenize(mBraintreeFragment, newCardBuilder);
+        PaymentMethodNonceCallback tokenizationCallback = new PaymentMethodNonceCallback() {
+            @Override
+            public void success(PaymentMethodNonce paymentMethodNonce) {
+                Log.d("NONCE:", paymentMethodNonce.getNonce());
+            }
+
+            @Override
+            public void failure(Exception e) {
+
+            }
+        };
+
+        Card.tokenize(mBraintreeFragment, testCardBuilder, tokenizationCallback);
+
 
         // Step 2 - call /validate-payment-method
 
