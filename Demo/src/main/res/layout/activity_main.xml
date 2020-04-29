@@ -8,7 +8,21 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/resultLabel"
+        android:id="@+id/uatTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:singleLine="true"
+        android:text="UAT: (empty)"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/resultTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome to the PayPal SDK!"
@@ -25,6 +39,6 @@
         android:text="Card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resultLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/resultTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

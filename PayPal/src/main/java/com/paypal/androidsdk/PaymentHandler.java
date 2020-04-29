@@ -13,17 +13,16 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
 import com.paypal.androidsdk.models.CheckoutResult;
 
-public class APIClient {
+public class PaymentHandler {
 
     private String mUAT;
     private CheckoutCompleteListener mCheckoutCompleteListener;
     private BraintreeFragment mBraintreeFragment;
 
-    public APIClient(AppCompatActivity activity, String uat, CheckoutCompleteListener listener) {
+    public PaymentHandler(AppCompatActivity activity, String uat, CheckoutCompleteListener listener) {
         try {
-            String btSandTokenizationKey = "sandbox_tmxhyf7d_dcpspy2brwdjr3qn"; // for development
-            mBraintreeFragment = BraintreeFragment.newInstance(activity, btSandTokenizationKey);
             mUAT = uat;
+            mBraintreeFragment = BraintreeFragment.newInstance(activity, mUAT);
             mCheckoutCompleteListener = listener;
         } catch (InvalidArgumentException e) {
             System.out.println("Failed to initialize API Client.");
@@ -41,27 +40,26 @@ public class APIClient {
                 .cvv("123")
                 .postalCode("12345");
 
-        PaymentMethodNonceCallback tokenizationCallback = new PaymentMethodNonceCallback() {
+
+        Card.tokenize(mBraintreeFragment, testCardBuilder, new PaymentMethodNonceCallback() {
             @Override
             public void success(PaymentMethodNonce paymentMethodNonce) {
                 Log.d("NONCE:", paymentMethodNonce.getNonce());
+                mCheckoutCompleteListener.onCheckoutComplete(new CheckoutResult("happy-order-id", CheckoutResult.CheckoutType.CARD));
             }
 
             @Override
             public void failure(Exception e) {
 
             }
-        };
-
-        Card.tokenize(mBraintreeFragment, testCardBuilder, tokenizationCallback);
-
+        });
 
         // Step 2 - call /validate-payment-method
 
         // Step 3 - check for contingency
 
         // Step 4 - handle result
-        mCheckoutCompleteListener.onCheckoutComplete(new CheckoutResult("order-id", CheckoutResult.CheckoutType.CARD));
+
     }
 
 }
