@@ -5,7 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.paypal.androidsdk.PaymentHandler;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
 import com.paypal.androidsdk.models.CheckoutResult;
+import com.paypal.demo.models.Amount;
+import com.paypal.demo.models.Order;
+import com.paypal.demo.models.OrderRequest;
 import com.paypal.demo.models.PayPalUAT;
+import com.paypal.demo.models.Payee;
+import com.paypal.demo.models.PurchaseUnit;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,11 +35,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CheckoutCompleteListener mCheckoutCompleteListener;
     private DemoAPIClient mDemoClient;
     private PayPalUAT mPayPalUAT;
+    private String mOrderID;
 
     // UI elements
-    private Button mSubmitCardButtom;
-    private TextView mResultLabel;
+    private Button mSubmitCardButton;
+    private Button mOrderIDButton;
+    private TextView mStatusLabel;
     private TextView mUATLabel;
+    private TextView mOrderIDLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +55,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fetchUAT();
 
         // Set up UI elements
-        mSubmitCardButtom = findViewById(R.id.submitCard);
-        mSubmitCardButtom.setOnClickListener(this);
-        mResultLabel = findViewById(R.id.resultTextView);
+        mSubmitCardButton = findViewById(R.id.submitCard);
+        mSubmitCardButton.setOnClickListener(this);
+        mOrderIDButton = findViewById(R.id.orderIDButton);
+        mOrderIDButton.setOnClickListener(this);
+        mStatusLabel = findViewById(R.id.statusTextView);
         mUATLabel = findViewById(R.id.uatTextView);
+        mOrderIDLabel = findViewById(R.id.orderIDTextView);
     }
 
     // activity setup
 
-    public void fetchUAT() {
+    private void fetchUAT() {
         final AppCompatActivity self = this;
 
         Call<PayPalUAT> call = mDemoClient.getPayPalUAT("US");
@@ -73,24 +86,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    private void fetchOrderID() {
+        // Construct order request
+        // TODO: make this more concise
+        Amount amount = new Amount();
+        amount.setCurrencyCode("USD");
+        amount.setValue("99.99");
+
+        ArrayList<PurchaseUnit> purchaseUnits = new ArrayList<>();
+        PurchaseUnit purchaseUnit = new PurchaseUnit();
+        purchaseUnit.setAmount(amount);
+        purchaseUnits.add(purchaseUnit);
+
+        Payee payee = new Payee();
+        payee.setEmailAddress("sammy@gmail.com");
+
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setPayee(payee);
+        orderRequest.setIntent("CAPTURE");
+        orderRequest.setPurchaesUnits(purchaseUnits);
+
+        // Fetch order
+        Call<Order> call = mDemoClient.fetchOrderID("US", orderRequest);
+        call.enqueue(new Callback<Order>() {
+            @Override
+            public void onResponse(Call<Order> call, Response<Order> response) {
+                mOrderID = response.body().getID();
+                mOrderIDLabel.setText("Order ID: " + mOrderID);
+            }
+
+            @Override
+            public void onFailure(Call<Order> call, Throwable t) {
+                mOrderIDLabel.setText("Order ID: error" + t.getMessage());
+            }
+        });
+    }
+
     private void setUpListeners() {
         mCheckoutCompleteListener = new CheckoutCompleteListener() {
             @Override
             public void onCheckoutComplete(CheckoutResult result) {
-                mResultLabel.setText("Card checkout success: " + result.getOrderID());
+                mStatusLabel.setText("Checkout success: " + result.getOrderID());
             }
 
             @Override
-            public void onCheckoutError(Exception exception) {
-                mResultLabel.setText("Card checkout failed.");
+            public void onCheckoutError(Exception e) {
+                mStatusLabel.setText("Checkout failed: " + e.getMessage());
             }
         };
     }
 
-    // payment handler implementations
+    // payment handler checkout implementations
 
     private void initiateCardCheckout() {
-        mPaymentHandler.checkoutWithCard("my-order", null);
+        mStatusLabel.setText("Checking out with card ...");
+        mPaymentHandler.checkoutWithCard(mOrderID, null);
     }
 
     // handle UI interaction
@@ -100,6 +150,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.submitCard:
                 initiateCardCheckout();
+            case R.id.orderIDButton:
+                fetchOrderID();
         }
     }
 

@@ -22,23 +22,46 @@
 
 
     <TextView
-        android:id="@+id/resultTextView"
+        android:id="@+id/orderIDTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:singleLine="true"
+        android:text="Order ID: (empty)"
+        app:layout_constraintEnd_toEndOf="@+id/uatTextView"
+        app:layout_constraintStart_toStartOf="@+id/uatTextView"
+        app:layout_constraintTop_toBottomOf="@+id/uatTextView" />
+
+    <TextView
+        android:id="@+id/statusTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to the PayPal SDK!"
+        android:layout_marginBottom="10dp"
+        android:text="Status: "
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/submitCard"
+        app:layout_constraintVertical_bias="0.882" />
 
     <Button
         android:id="@+id/submitCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="150dp"
         android:text="Card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resultTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/orderIDButton" />
+
+    <Button
+        android:id="@+id/orderIDButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Get Order ID"
+        app:layout_constraintStart_toStartOf="@+id/orderIDTextView"
+        app:layout_constraintTop_toBottomOf="@+id/orderIDTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
