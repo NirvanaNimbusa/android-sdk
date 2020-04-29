@@ -23,9 +23,10 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    // properties
     private PaymentHandler mPaymentHandler;
     private CheckoutCompleteListener mCheckoutCompleteListener;
-    private APIClient mDemoClient;
+    private DemoAPIClient mDemoClient;
     private PayPalUAT mPayPalUAT;
 
     // UI elements
@@ -38,11 +39,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDemoClient = RetrofitClientInstance.getInstance().create(APIClient.class);
-
-        fetchUAT();
+        mDemoClient = RetrofitClientInstance.getInstance().create(DemoAPIClient.class);
 
         setUpListeners();
+        fetchUAT();
 
         // Set up UI elements
         mSubmitCardButtom = findViewById(R.id.submitCard);
@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mResultLabel = findViewById(R.id.resultTextView);
         mUATLabel = findViewById(R.id.uatTextView);
     }
+
+    // activity setup
 
     public void fetchUAT() {
         final AppCompatActivity self = this;
@@ -85,9 +87,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         };
     }
 
+    // payment handler implementations
+
     private void initiateCardCheckout() {
         mPaymentHandler.checkoutWithCard("my-order", null);
     }
+
+    // handle UI interaction
 
     @Override
     public void onClick(View view) {

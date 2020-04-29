@@ -7,7 +7,7 @@ import retrofit2.Callback;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface APIClient {
+public interface DemoAPIClient {
 
     @GET("/uat")
     Call<PayPalUAT> getPayPalUAT(@Query("countryCode") String countryCode);
