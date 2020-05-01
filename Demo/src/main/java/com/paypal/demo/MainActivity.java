@@ -2,6 +2,7 @@ package com.paypal.demo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.paypal.androidsdk.PaymentHandler;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
 import com.paypal.androidsdk.models.CheckoutResult;
@@ -75,14 +76,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(Call<PayPalUAT> call, Response<PayPalUAT> response) {
                 mPayPalUAT = response.body();
-                mPaymentHandler = new PaymentHandler(self, mPayPalUAT.getUAT(), mCheckoutCompleteListener);
+                try {
+                    mPaymentHandler = new PaymentHandler(self, mPayPalUAT.getUAT(), mCheckoutCompleteListener);
+                } catch (InvalidArgumentException e) {
+                    mUATLabel.setText("UAT: " + e.getMessage());
+                    e.printStackTrace();
+                }
 
                 mUATLabel.setText("UAT: " + mPayPalUAT.getUAT());
             }
 
             @Override
-            public void onFailure(Call<PayPalUAT> call, Throwable t) {
-                Log.d(null, "Error fetching PayPal UAT.");
+            public void onFailure(Call<PayPalUAT> call, Throwable e) {
+                mUATLabel.setText("UAT: " + e.getMessage());
             }
         });
     }
@@ -152,8 +158,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.submitCard:
                 initiateCardCheckout();
+                break;
             case R.id.orderIDButton:
                 fetchOrderID();
+                break;
         }
     }
 
