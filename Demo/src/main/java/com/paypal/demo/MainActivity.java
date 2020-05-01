@@ -49,11 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDemoClient = RetrofitClientInstance.getInstance().create(DemoAPIClient.class);
-
-        setUpListeners();
-        fetchUAT();
-
         // Set up UI elements
         mSubmitCardButton = findViewById(R.id.submitCard);
         mSubmitCardButton.setOnClickListener(this);
@@ -62,12 +57,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mStatusLabel = findViewById(R.id.statusTextView);
         mUATLabel = findViewById(R.id.uatTextView);
         mOrderIDLabel = findViewById(R.id.orderIDTextView);
+
+        mDemoClient = RetrofitClientInstance.getInstance().create(DemoAPIClient.class);
+
+        setUpListeners();
+        fetchUAT();
     }
 
     // activity setup
 
     private void fetchUAT() {
         final AppCompatActivity self = this;
+        mUATLabel.setText("UAT: ... fetching");
 
         Call<PayPalUAT> call = mDemoClient.getPayPalUAT("US");
         call.enqueue(new Callback<PayPalUAT>() {
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         orderRequest.setPurchaesUnits(purchaseUnits);
 
         // Fetch order
+        mOrderIDLabel.setText("Order ID: ... fetching");
         Call<Order> call = mDemoClient.fetchOrderID("US", orderRequest);
         call.enqueue(new Callback<Order>() {
             @Override
@@ -155,6 +157,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    // menu bar
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -164,11 +168,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.settings:
                 this.startActivity(new Intent(this, SettingsActivity.class));
                 return true;
+            case R.id.reset:
+                fetchUAT();
+                mOrderID = null;
+                mOrderIDLabel.setText("Order ID: (empty)");
             default:
                 return super.onOptionsItemSelected(item);
         }
