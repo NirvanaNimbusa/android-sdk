@@ -12,6 +12,7 @@ import com.braintreepayments.api.models.Authorization;
 import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.PayPalUAT;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+//import com.braintreepayments.browserswitch.BrowserSwitchClient;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
 import com.paypal.androidsdk.interfaces.ValidatePaymentCallback;
 import com.paypal.androidsdk.models.CheckoutResult;
@@ -20,7 +21,9 @@ public class PaymentHandler {
 
     private PayPalUAT mPayPalUAT;
     private CheckoutCompleteListener mCheckoutCompleteListener;
+
     private BraintreeFragment mBraintreeFragment;
+//    BrowserSwitchClient browserSwitchClient;
 
     public PaymentHandler(AppCompatActivity activity, String uat, CheckoutCompleteListener listener) throws InvalidArgumentException {
         try {
@@ -32,6 +35,8 @@ public class PaymentHandler {
         }
 
         mCheckoutCompleteListener = listener;
+
+//        browserSwitchClient = BrowserSwitchClient.newInstance();
     }
 
     public void checkoutWithCard(final String orderID, final CardBuilder cardBuilder) {

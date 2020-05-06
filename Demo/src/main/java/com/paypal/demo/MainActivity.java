@@ -3,6 +3,7 @@ package com.paypal.demo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
+//import com.braintreepayments.browserswitch.BrowserSwitchClient;
 import com.paypal.androidsdk.PaymentHandler;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
 import com.paypal.androidsdk.models.CheckoutResult;

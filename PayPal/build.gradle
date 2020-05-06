@@ -25,7 +25,8 @@ android {
 }
 
 dependencies {
-    api 'com.braintreepayments.api:braintree:3.9.100-SNAPSHOT'
+    api 'com.braintreepayments.api:braintree:3.9.100-DEVELOPMENT'
+//    implementation 'com.braintreepayments:browser-switch:0.3.0-DEVELOPMENT'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0' // TODO: why do we need this?
