@@ -41,12 +41,20 @@ public class PaymentHandler {
 
     public void checkoutWithCard(final String orderID, final CardBuilder cardBuilder) {
 
+        // trigger 3ds v1
         CardBuilder testCardBuilder = new CardBuilder()
                 .cardholderName("Suzie Smith")
-                .cardNumber("4111111111111111")
+                .cardNumber("4000000000000002")
                 .expirationMonth("01")
                 .expirationYear("2023")
                 .cvv("123");
+
+//        CardBuilder testCardBuilder = new CardBuilder()
+//                .cardholderName("Suzie Smith")
+//                .cardNumber("4111111111111111")
+//                .expirationMonth("01")
+//                .expirationYear("2023")
+//                .cvv("123");
 
         // Step 1 - tokenize
         Card.tokenize(mBraintreeFragment, testCardBuilder, new PaymentMethodNonceCallback() {
