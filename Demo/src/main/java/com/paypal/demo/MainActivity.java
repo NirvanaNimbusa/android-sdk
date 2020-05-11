@@ -99,18 +99,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // TODO: make this more concise
         Amount amount = new Amount();
         amount.setCurrencyCode("USD");
-        amount.setValue("99.99");
-
-        ArrayList<PurchaseUnit> purchaseUnits = new ArrayList<>();
-        PurchaseUnit purchaseUnit = new PurchaseUnit();
-        purchaseUnit.setAmount(amount);
-        purchaseUnits.add(purchaseUnit);
+        amount.setValue("10.00");
 
         Payee payee = new Payee();
-        payee.setEmailAddress("sammy@gmail.com");
+        payee.setEmailAddress("ahuang-ppcp-demo-sb1@paypal.com");
+
+        PurchaseUnit purchaseUnit = new PurchaseUnit();
+        purchaseUnit.setAmount(amount);
+        purchaseUnit.setPayee(payee);
+
+        ArrayList<PurchaseUnit> purchaseUnits = new ArrayList<>();
+        purchaseUnits.add(purchaseUnit);
 
         OrderRequest orderRequest = new OrderRequest();
-        orderRequest.setPayee(payee);
         orderRequest.setIntent("CAPTURE");
         orderRequest.setPurchaesUnits(purchaseUnits);
 

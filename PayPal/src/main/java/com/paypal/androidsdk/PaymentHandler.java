@@ -46,8 +46,7 @@ public class PaymentHandler {
                 .cardNumber("4111111111111111")
                 .expirationMonth("01")
                 .expirationYear("2023")
-                .cvv("123")
-                .postalCode("12345");
+                .cvv("123");
 
         // Step 1 - tokenize
         Card.tokenize(mBraintreeFragment, testCardBuilder, new PaymentMethodNonceCallback() {
