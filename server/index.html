@@ -1,0 +1,25 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3DS Re-direct</title>
+</head>
+
+<body>
+  <a id="return-to-app" href="#">Return to App</a>
+  <script>
+    const url = window.location.href;
+    const queryString = url.substring(url.indexOf('?'));
+
+    const scheme = 'com.paypal.demo.browserswitch';
+    const appLink = `${scheme}://x-callback-url/paypal-sdk/card-contingency`;
+
+    const linkEl = document.getElementById('return-to-app');
+    linkEl.href = appLink;
+
+  </script>
+</body>
+</html>
+

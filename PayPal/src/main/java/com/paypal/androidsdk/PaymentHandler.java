@@ -1,8 +1,11 @@
 package com.paypal.androidsdk;
 
+import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.Card;
@@ -13,7 +16,12 @@ import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.PayPalUAT;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 //import com.braintreepayments.browserswitch.BrowserSwitchClient;
+import com.braintreepayments.browserswitch.BrowserSwitchClient;
+import com.braintreepayments.browserswitch.BrowserSwitchListener;
+import com.braintreepayments.browserswitch.BrowserSwitchResult;
+import com.braintreepayments.browserswitch.IBrowserSwitchClient;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
+import com.paypal.androidsdk.interfaces.KanyeListener;
 import com.paypal.androidsdk.interfaces.ValidatePaymentCallback;
 import com.paypal.androidsdk.models.CheckoutResult;
 
@@ -39,7 +47,9 @@ public class PaymentHandler {
 //        browserSwitchClient = BrowserSwitchClient.newInstance();
     }
 
-    public void checkoutWithCard(final String orderID, final CardBuilder cardBuilder) {
+    public void checkoutWithCard(
+            final String orderID, final CardBuilder cardBuilder, final FragmentActivity activity, final IBrowserSwitchClient browserSwitchClient, final BrowserSwitchListener browserSwitchListener
+    ) {
 
         // trigger 3ds v1
         CardBuilder testCardBuilder = new CardBuilder()
@@ -67,12 +77,27 @@ public class PaymentHandler {
                 validateClient.validatePaymentMethod(orderID, paymentMethodNonce.getNonce(), true, new ValidatePaymentCallback() {
                     @Override
                     public void onValidateSuccess() {
-                        // if 3DS URL, display it in web view
+                        // if 3DS URL, display it in web view;
                     }
 
                     @Override
                     public void onValidateFailure() {
                         //
+                    }
+
+                    @Override
+                    public void on3DSContingency(String contingencyUrl) {
+                        String returnUrlScheme = mBraintreeFragment.getReturnUrlScheme();
+                        String redirectUri = "http://10.0.2.2:8000";
+//                        String redirectUri = String.format("%s://x-callback-url/paypal-sdk/card-contingency", returnUrlScheme);
+
+                        String browserSwitchUrl = Uri.parse(contingencyUrl)
+                                .buildUpon()
+                                .appendQueryParameter("redirect_uri", redirectUri)
+                                .build()
+                                .toString();
+
+                        browserSwitchClient.start(123, Uri.parse(browserSwitchUrl), activity);
                     }
                 });
 

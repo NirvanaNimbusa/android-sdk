@@ -1,11 +1,18 @@
 package com.paypal.demo;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 //import com.braintreepayments.browserswitch.BrowserSwitchClient;
+import com.braintreepayments.browserswitch.BrowserSwitch;
+import com.braintreepayments.browserswitch.BrowserSwitchClient;
+import com.braintreepayments.browserswitch.BrowserSwitchListener;
+import com.braintreepayments.browserswitch.BrowserSwitchResult;
+import com.braintreepayments.browserswitch.IBrowserSwitchClient;
 import com.paypal.androidsdk.PaymentHandler;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
+import com.paypal.androidsdk.interfaces.KanyeListener;
 import com.paypal.androidsdk.models.CheckoutResult;
 import com.paypal.demo.models.Amount;
 import com.paypal.demo.models.Order;
@@ -15,6 +22,7 @@ import com.paypal.demo.models.Payee;
 import com.paypal.demo.models.PurchaseUnit;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -30,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, BrowserSwitchListener {
 
     // properties
     private PaymentHandler mPaymentHandler;
@@ -45,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mStatusLabel;
     private TextView mUATLabel;
     private TextView mOrderIDLabel;
+
+    private IBrowserSwitchClient browserSwitchClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +71,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mOrderIDLabel = findViewById(R.id.orderIDTextView);
 
         mDemoClient = RetrofitClientInstance.getInstance().create(DemoAPIClient.class);
+        browserSwitchClient = BrowserSwitch.newClient();
 
         setUpListeners();
         fetchUAT();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        browserSwitchClient.deliverResult(this);
     }
 
     // activity setup
@@ -150,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initiateCardCheckout() {
         mStatusLabel.setText("Checking out with card ...");
-        mPaymentHandler.checkoutWithCard(mOrderID, null);
+        mPaymentHandler.checkoutWithCard(mOrderID, null, this, browserSwitchClient, this);
     }
 
     // handle UI interaction
@@ -191,4 +208,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public void onBrowserSwitchResult(int requestCode, BrowserSwitchResult result, @Nullable Uri returnUri) {
+        Log.d("Ye", "Yeezy");
+    }
 }

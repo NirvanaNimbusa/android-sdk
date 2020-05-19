@@ -5,9 +5,10 @@ package com.paypal.androidsdk.interfaces;
  */
 public interface ValidatePaymentCallback {
 
+    void on3DSContingency(String url);
+
     void onValidateSuccess(); //TODO: return custom model for a ValidateResult type, on success
 
     void onValidateFailure();
-
 }
 

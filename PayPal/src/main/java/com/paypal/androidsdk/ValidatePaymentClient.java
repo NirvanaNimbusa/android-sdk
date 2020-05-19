@@ -3,11 +3,14 @@ package com.paypal.androidsdk;
 import android.util.ArrayMap;
 import android.util.Log;
 
+import com.braintreepayments.api.exceptions.BraintreeApiErrorResponse;
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeHttpClient;
 import com.braintreepayments.api.models.PayPalUAT;
 import com.paypal.androidsdk.interfaces.ValidatePaymentCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Collections;
@@ -26,7 +29,7 @@ class ValidatePaymentClient {
     protected void validatePaymentMethod(String orderID,
                                          String nonce,
                                          Boolean threeDSecureRequested,
-                                         ValidatePaymentCallback callback) {
+                                         final ValidatePaymentCallback callback) {
         String token = mPayPalUAT.getBearer();
         Map<String, String> headers = new ArrayMap<>();
         headers.put("Authorization", String.format("Bearer %s", token));
@@ -56,6 +59,26 @@ class ValidatePaymentClient {
 
             @Override
             public void failure(Exception exception) {
+                if (exception instanceof BraintreeApiErrorResponse) {
+                    BraintreeApiErrorResponse response = (BraintreeApiErrorResponse) exception;
+                    String errorResponse = response.getErrorResponse();
+                    try {
+                        JSONObject errorJSON = new JSONObject(errorResponse);
+                        JSONArray links = errorJSON.getJSONArray("links");
+                        for (int i = 0; i < links.length(); i++) {
+                            JSONObject obj = links.getJSONObject(i);
+                            String rel = obj.getString("rel");
+                            if (rel.equalsIgnoreCase("3ds-contingency-resolution")) {
+                                String contingencyUrl = obj.getString("href");
+                                callback.on3DSContingency(contingencyUrl);
+                                break;
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 Log.d("FAILURE", exception.toString());
             }
         });
