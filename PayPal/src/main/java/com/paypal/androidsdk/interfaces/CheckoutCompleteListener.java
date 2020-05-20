@@ -12,4 +12,5 @@ public interface CheckoutCompleteListener {
 
     void onCheckoutError(Exception exception);
 
+    void onCheckoutValidationRequired();
 }

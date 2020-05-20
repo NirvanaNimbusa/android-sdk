@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 //import com.braintreepayments.browserswitch.BrowserSwitchClient;
+import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.browserswitch.BrowserSwitch;
 import com.braintreepayments.browserswitch.BrowserSwitchClient;
 import com.braintreepayments.browserswitch.BrowserSwitchListener;
 import com.braintreepayments.browserswitch.BrowserSwitchResult;
 import com.braintreepayments.browserswitch.IBrowserSwitchClient;
+import com.paypal.androidsdk.PayPalClient;
 import com.paypal.androidsdk.PaymentHandler;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
 import com.paypal.androidsdk.interfaces.KanyeListener;
@@ -40,6 +42,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, BrowserSwitchListener {
 
+    private static final String TAG = "MainActivity";
+
     // properties
     private PaymentHandler mPaymentHandler;
     private CheckoutCompleteListener mCheckoutCompleteListener;
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mUATLabel;
     private TextView mOrderIDLabel;
 
-    private IBrowserSwitchClient browserSwitchClient;
+    private PayPalClient payPalClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mOrderIDLabel = findViewById(R.id.orderIDTextView);
 
         mDemoClient = RetrofitClientInstance.getInstance().create(DemoAPIClient.class);
-        browserSwitchClient = BrowserSwitch.newClient();
 
         setUpListeners();
         fetchUAT();
@@ -80,7 +83,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        browserSwitchClient.deliverResult(this);
+        if (payPalClient != null) {
+            payPalClient.onResume(this);
+        }
     }
 
     // activity setup
@@ -95,7 +100,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(Call<PayPalUAT> call, Response<PayPalUAT> response) {
                 mPayPalUAT = response.body();
                 try {
-                    mPaymentHandler = new PaymentHandler(self, mPayPalUAT.getUAT(), mCheckoutCompleteListener);
+                    payPalClient = PayPalClient.newInstance(mPayPalUAT.getUAT(), MainActivity.this);
+                    payPalClient.onResume(MainActivity.this);
+//                    mPaymentHandler = new PaymentHandler(self, mPayPalUAT.getUAT(), mCheckoutCompleteListener);
                 } catch (InvalidArgumentException e) {
                     mUATLabel.setText("UAT: " + e.getMessage());
                     e.printStackTrace();
@@ -160,6 +167,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onCheckoutError(Exception e) {
                 mStatusLabel.setText("Checkout failed: " + e.getMessage());
             }
+
+            @Override
+            public void onCheckoutValidationRequired() {
+                Log.d(TAG, "CHECKOUT 3DS VALIDATION REQUIRED");
+            }
         };
     }
 
@@ -167,7 +179,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initiateCardCheckout() {
         mStatusLabel.setText("Checking out with card ...");
-        mPaymentHandler.checkoutWithCard(mOrderID, null, this, browserSwitchClient, this);
+
+        // trigger 3ds v1
+        CardBuilder cardBuilder = new CardBuilder()
+                .cardholderName("Suzie Smith")
+                .cardNumber("4000000000000002")
+                .expirationMonth("01")
+                .expirationYear("2023")
+                .cvv("123");
+
+//        CardBuilder cardBuilder = new CardBuilder()
+//                .cardholderName("Suzie Smith")
+//                .cardNumber("4111111111111111")
+//                .expirationMonth("01")
+//                .expirationYear("2023")
+//                .cvv("123");
+
+        payPalClient.checkoutWithCard(cardBuilder, mOrderID, this, mCheckoutCompleteListener);
+
+//        mPaymentHandler.checkoutWithCard(mOrderID, null, this, browserSwitchClient, this);
     }
 
     // handle UI interaction
