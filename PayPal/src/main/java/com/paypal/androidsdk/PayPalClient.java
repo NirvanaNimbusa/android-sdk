@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.Card;
+import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.exceptions.BraintreeApiErrorResponse;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.HttpResponseCallback;

@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // UI elements
     private Button mSubmitCardButton;
     private Button mOrderIDButton;
+    private Button mSubmitPayPalButton;
+    private Button mSubmitGooglePayButton;
+
     private TextView mStatusLabel;
     private TextView mUATLabel;
     private TextView mOrderIDLabel;
@@ -68,8 +71,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set up UI elements
         mSubmitCardButton = findViewById(R.id.submitCard);
         mSubmitCardButton.setOnClickListener(this);
+
+        mSubmitPayPalButton = findViewById(R.id.submitPayPal);
+        mSubmitPayPalButton.setOnClickListener(this);
+
+        mSubmitGooglePayButton = findViewById(R.id.submitGooglePay);
+        mSubmitGooglePayButton.setOnClickListener(this);
+
         mOrderIDButton = findViewById(R.id.orderIDButton);
         mOrderIDButton.setOnClickListener(this);
+
         mStatusLabel = findViewById(R.id.statusTextView);
         mUATLabel = findViewById(R.id.uatTextView);
         mOrderIDLabel = findViewById(R.id.orderIDTextView);
@@ -199,6 +210,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 //        mPaymentHandler.checkoutWithCard(mOrderID, null, this, browserSwitchClient, this);
     }
+    private void initiatePayPalCheckout() {
+        payPalClient.checkoutWithPayPal();
+    }
+
+    private void initiateGooglePayCheckout(){
+        payPalClient.checkoutWithGooglePay();
+    }
 
     // handle UI interaction
 
@@ -207,6 +225,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.submitCard:
                 initiateCardCheckout();
+                break;
+            case R.id.submitPayPal:
+                initiatePayPalCheckout();
+                break;
+            case R.id.submitGooglePay:
+                initiateGooglePayCheckout();
                 break;
             case R.id.orderIDButton:
                 fetchOrderID();
