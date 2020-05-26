@@ -11,6 +11,8 @@ import com.braintreepayments.browserswitch.BrowserSwitchClient;
 import com.braintreepayments.browserswitch.BrowserSwitchListener;
 import com.braintreepayments.browserswitch.BrowserSwitchResult;
 import com.braintreepayments.browserswitch.IBrowserSwitchClient;
+import com.paypal.androidsdk.PayPalCheckoutListener;
+import com.paypal.androidsdk.PayPalCheckoutResult;
 import com.paypal.androidsdk.PayPalClient;
 import com.paypal.androidsdk.PaymentHandler;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
@@ -40,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, BrowserSwitchListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, PayPalCheckoutListener {
 
     private static final String TAG = "MainActivity";
 
@@ -263,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onBrowserSwitchResult(int requestCode, BrowserSwitchResult result, @Nullable Uri returnUri) {
+    public void onResult(@Nullable Exception e, @Nullable PayPalCheckoutResult result) {
         Log.d("Ye", "Yeezy");
     }
 }
