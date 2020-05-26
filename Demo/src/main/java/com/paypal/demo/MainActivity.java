@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        mPaymentHandler.checkoutWithCard(mOrderID, null, this, browserSwitchClient, this);
     }
     private void initiatePayPalCheckout() {
-        payPalClient.checkoutWithPayPal();
+        payPalClient.checkoutWithPayPal(mOrderID, this);
     }
 
     private void initiateGooglePayCheckout(){

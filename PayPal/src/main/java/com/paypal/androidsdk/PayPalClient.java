@@ -1,6 +1,7 @@
 package com.paypal.androidsdk;
 
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
@@ -43,7 +44,8 @@ public class PayPalClient {
     }
 
     public void checkoutWithCard(
-            CardBuilder cardBuilder, final String orderId, final FragmentActivity activity, final CheckoutCompleteListener listener
+        CardBuilder cardBuilder, final String orderId, final FragmentActivity activity,
+        final CheckoutCompleteListener listener
     ) {
         Card.tokenize(braintreeFragment, cardBuilder, new PaymentMethodNonceCallback() {
             @Override
@@ -59,7 +61,8 @@ public class PayPalClient {
     }
 
     private void validatePaymentMethodNonce(
-            PaymentMethodNonce paymentMethodNonce, final String orderId, final FragmentActivity activity, final CheckoutCompleteListener listener
+        PaymentMethodNonce paymentMethodNonce, final String orderId,
+        final FragmentActivity activity, final CheckoutCompleteListener listener
     ) {
         String path = ValidatePayment.createValidationUrl(payPalUAT, orderId);
         String data = ValidatePayment.createValidationPayload(
@@ -100,8 +103,24 @@ public class PayPalClient {
         browserSwitchClient.start(123, browserSwitchUrl, activity);
     }
 
-    public void checkoutWithPayPal() {
+    public void checkoutWithPayPal(String orderId, FragmentActivity activity) {
+        PayPalUAT.Environment environment = payPalUAT.getEnvironment();
 
+        String baseURL = null;
+        switch (environment) {
+            case PRODUCTION:
+                baseURL = "https://www.paypal.com";
+                break;
+            case SANDBOX:
+                baseURL = "https://www.sandbox.paypal.com";
+                break;
+            case STAGING:
+                baseURL = "https://www.msmaster.qa.paypal.com";
+                break;
+        }
+
+        String payPalCheckoutURL = String.format("%s/checkoutnow?token=%s", baseURL, orderId);
+        browserSwitchClient.start(456, Uri.parse(payPalCheckoutURL), activity);
     }
 
     public void checkoutWithGooglePay() {
