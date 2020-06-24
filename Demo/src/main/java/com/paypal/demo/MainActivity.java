@@ -17,7 +17,7 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.models.CardBuilder;
 import com.paypal.androidsdk.PayPalCheckoutListener;
 import com.paypal.androidsdk.PayPalCheckoutResult;
-import com.paypal.androidsdk.PayPalClient;
+import com.paypal.androidsdk.CheckoutClient;
 import com.paypal.androidsdk.PaymentHandler;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
 import com.paypal.androidsdk.models.CheckoutResult;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mUATLabel;
     private TextView mOrderIDLabel;
 
-    private PayPalClient payPalClient;
+    private CheckoutClient checkoutClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        if (payPalClient != null) {
-            payPalClient.resume(this);
+        if (checkoutClient != null) {
+            checkoutClient.resume(this);
         }
     }
 
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(Call<PayPalUAT> call, Response<PayPalUAT> response) {
                 mPayPalUAT = response.body();
                 try {
-                    payPalClient = PayPalClient.newInstance(mPayPalUAT.getUAT(), MainActivity.this);
+                    checkoutClient = new CheckoutClient(mPayPalUAT.getUAT(), MainActivity.this);
 //                    mPaymentHandler = new PaymentHandler(self, mPayPalUAT.getUAT(), mCheckoutCompleteListener);
                 } catch (InvalidArgumentException e) {
                     mUATLabel.setText("UAT: " + e.getMessage());
@@ -201,16 +201,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                .expirationYear("2023")
 //                .cvv("123");
 
-        payPalClient.checkoutWithCard(cardBuilder, mOrderID, this, mCheckoutCompleteListener);
+        checkoutClient.payWithCard(cardBuilder, mOrderID, this, mCheckoutCompleteListener);
 
 //        mPaymentHandler.checkoutWithCard(mOrderID, null, this, browserSwitchClient, this);
     }
     private void initiatePayPalCheckout() {
-        payPalClient.checkoutWithPayPal(mOrderID, this);
+        checkoutClient.payWithPayPal(mOrderID, this);
     }
 
     private void initiateGooglePayCheckout(){
-        payPalClient.checkoutWithGooglePay();
+        checkoutClient.checkoutWithGooglePay();
     }
 
     // handle UI interaction

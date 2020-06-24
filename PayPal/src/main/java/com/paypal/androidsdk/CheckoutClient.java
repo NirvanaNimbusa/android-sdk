@@ -22,9 +22,7 @@ import com.braintreepayments.browserswitch.BrowserSwitchResult;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
 import com.paypal.androidsdk.models.CheckoutResult;
 
-import java.net.URL;
-
-public class PayPalClient {
+public class CheckoutClient {
 
     private static final String TAG = "PayPalClient";
     private static final String URL_SCHEME = "com.paypal.demo.braintree";
@@ -35,18 +33,14 @@ public class PayPalClient {
     private BraintreeFragment braintreeFragment;
     private BrowserSwitchClient browserSwitchClient;
 
-    public static PayPalClient newInstance(String uat, FragmentActivity activity) throws InvalidArgumentException {
-        return new PayPalClient(uat, activity);
-    }
-
-    private PayPalClient(String uat, FragmentActivity activity) throws InvalidArgumentException {
+    public CheckoutClient(String uat, FragmentActivity activity) throws InvalidArgumentException {
         payPalUAT = (PayPalUAT) Authorization.fromString(uat);
         braintreeFragment = BraintreeFragment.newInstance(activity, payPalUAT.getBearer());
         httpClient = new PayPalHttpClient(payPalUAT.getPayPalURL(), payPalUAT.getBearer());
         browserSwitchClient = BrowserSwitchClient.newInstance(URL_SCHEME);
     }
 
-    public void checkoutWithCard(
+    public void payWithCard(
         CardBuilder cardBuilder, final String orderId, final FragmentActivity activity,
         final CheckoutCompleteListener listener
     ) {
@@ -110,7 +104,7 @@ public class PayPalClient {
         browserSwitchClient.start(123, browserSwitchUrl, activity, createBrowserSwitchListener(activity));
     }
 
-    public void checkoutWithPayPal(String orderId, FragmentActivity activity) {
+    public void payWithPayPal(String orderId, FragmentActivity activity) {
         PayPalUAT.Environment environment = payPalUAT.getEnvironment();
 
         String baseURL = null;
