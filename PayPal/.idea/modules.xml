@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1165644023/Demo.iml" filepath="$PROJECT_DIR$/.idea/modules/1165644023/Demo.iml" group="PayPal SDK/Demo" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PayPal.iml" filepath="$PROJECT_DIR$/.idea/modules/PayPal.iml" group="PayPal SDK/PayPal" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1882041733/PayPal_SDK.iml" filepath="$PROJECT_DIR$/.idea/modules/-1882041733/PayPal_SDK.iml" group="PayPal_SDK" />
+    </modules>
+  </component>
+</project>

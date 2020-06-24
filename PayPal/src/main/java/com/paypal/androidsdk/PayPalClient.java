@@ -69,8 +69,7 @@ public class PayPalClient {
 
     private void validatePaymentMethodNonce(
         PaymentMethodNonce paymentMethodNonce, final String orderId,
-        final FragmentActivity activity, final CheckoutCompleteListener listener
-    ) {
+        final FragmentActivity activity, final CheckoutCompleteListener listener) {
         String path = ValidatePayment.createValidationUrl(payPalUAT, orderId);
         String data = ValidatePayment.createValidationPayload(
                 payPalUAT, paymentMethodNonce.getNonce(), true);
