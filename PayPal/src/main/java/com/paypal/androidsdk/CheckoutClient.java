@@ -134,7 +134,7 @@ public class CheckoutClient {
         browserSwitchClient.start(456, browserSwitchUrl, activity, createBrowserSwitchListener(activity));
     }
 
-    public void checkoutWithGooglePay() {
+    public void payWithGooglePay() {
 
     }
 

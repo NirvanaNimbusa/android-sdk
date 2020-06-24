@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initiateGooglePayCheckout(){
-        checkoutClient.checkoutWithGooglePay();
+        checkoutClient.payWithGooglePay();
     }
 
     // handle UI interaction
