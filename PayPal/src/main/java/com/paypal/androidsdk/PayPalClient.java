@@ -1,8 +1,6 @@
 package com.paypal.androidsdk;
 
 import android.net.Uri;
-import android.os.Environment;
-import android.provider.Browser;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -10,7 +8,6 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.Card;
-import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.exceptions.BraintreeApiErrorResponse;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
@@ -19,22 +16,24 @@ import com.braintreepayments.api.models.Authorization;
 import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.PayPalUAT;
 import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.browserswitch.BrowserSwitch;
+import com.braintreepayments.browserswitch.BrowserSwitchClient;
 import com.braintreepayments.browserswitch.BrowserSwitchListener;
 import com.braintreepayments.browserswitch.BrowserSwitchResult;
-import com.braintreepayments.browserswitch.IBrowserSwitchClient;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
 import com.paypal.androidsdk.models.CheckoutResult;
+
+import java.net.URL;
 
 public class PayPalClient {
 
     private static final String TAG = "PayPalClient";
+    private static final String URL_SCHEME = "com.paypal.demo.braintree";
 
     private PayPalUAT payPalUAT;
-    private BraintreeFragment braintreeFragment;
-
     private PayPalHttpClient httpClient;
-    private IBrowserSwitchClient browserSwitchClient;
+
+    private BraintreeFragment braintreeFragment;
+    private BrowserSwitchClient browserSwitchClient;
 
     public static PayPalClient newInstance(String uat, FragmentActivity activity) throws InvalidArgumentException {
         return new PayPalClient(uat, activity);
@@ -44,7 +43,7 @@ public class PayPalClient {
         payPalUAT = (PayPalUAT) Authorization.fromString(uat);
         braintreeFragment = BraintreeFragment.newInstance(activity, payPalUAT.getBearer());
         httpClient = new PayPalHttpClient(payPalUAT.getPayPalURL(), payPalUAT.getBearer());
-        browserSwitchClient = BrowserSwitch.newClient();
+        browserSwitchClient = BrowserSwitchClient.newInstance(URL_SCHEME);
     }
 
     public void checkoutWithCard(
@@ -62,6 +61,10 @@ public class PayPalClient {
                 listener.onCheckoutError(exception);
             }
         });
+    }
+
+    public void resume(FragmentActivity activity) {
+        browserSwitchClient.deliverResult(activity, createBrowserSwitchListener(activity));
     }
 
     private void validatePaymentMethodNonce(
@@ -87,6 +90,8 @@ public class PayPalClient {
                     if (contingencyUrl != null) {
                         listener.onCheckoutValidationRequired();
                         performCheckoutWithCard3DS(contingencyUrl, activity);
+                    } else {
+                        listener.onCheckoutError(exception);
                     }
                 } else {
                     listener.onCheckoutError(exception);
@@ -96,15 +101,13 @@ public class PayPalClient {
     }
 
     private void performCheckoutWithCard3DS(String contingencyUrl, FragmentActivity activity) {
-        String returnUrlScheme = braintreeFragment.getReturnUrlScheme();
         String redirectUri =
-            String.format("%s://x-callback-url/paypal-sdk/paypal-checkout", returnUrlScheme);
+            String.format("%s://x-callback-url/paypal-sdk/paypal-checkout", URL_SCHEME);
 
         Uri browserSwitchUrl = Uri.parse(contingencyUrl)
                 .buildUpon()
                 .appendQueryParameter("redirect_uri", redirectUri)
                 .build();
-        // NOTE: here, browser switch client assumes activity is also a BrowserSwitchListener
         browserSwitchClient.start(123, browserSwitchUrl, activity, createBrowserSwitchListener(activity));
     }
 
@@ -124,9 +127,8 @@ public class PayPalClient {
                 break;
         }
 
-        String returnUrlScheme = braintreeFragment.getReturnUrlScheme();
         String redirectUri =
-                String.format("%s://x-callback-url/paypal-sdk/card-contingency", returnUrlScheme);
+                String.format("%s://x-callback-url/paypal-sdk/card-contingency", URL_SCHEME);
 
         Uri browserSwitchUrl = Uri.parse(baseURL)
                 .buildUpon()
@@ -143,10 +145,6 @@ public class PayPalClient {
 
     }
 
-    public void onResume(FragmentActivity activity) {
-        browserSwitchClient.deliverResult(activity, createBrowserSwitchListener(activity));
-    }
-
     private static BrowserSwitchListener createBrowserSwitchListener(final FragmentActivity activity) {
         return new BrowserSwitchListener() {
             @Override
@@ -159,8 +157,10 @@ public class PayPalClient {
 
                 } else if (activity instanceof PayPalCheckoutListener) {
                     final PayPalCheckoutListener checkoutListener = (PayPalCheckoutListener) activity;
-                    PayPalCheckoutResult checkoutResult = PayPalCheckoutResult.from(uri);
-                    checkoutListener.onResult(null, checkoutResult);
+                    if (uri != null) {
+                        PayPalCheckoutResult checkoutResult = PayPalCheckoutResult.from(uri);
+                        checkoutListener.onResult(null, checkoutResult);
+                    }
                 }
             }
         };

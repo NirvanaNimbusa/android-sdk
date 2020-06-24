@@ -1,32 +1,6 @@
 package com.paypal.demo;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
-//import com.braintreepayments.browserswitch.BrowserSwitchClient;
-import com.braintreepayments.api.models.CardBuilder;
-import com.braintreepayments.browserswitch.BrowserSwitch;
-import com.braintreepayments.browserswitch.BrowserSwitchClient;
-import com.braintreepayments.browserswitch.BrowserSwitchListener;
-import com.braintreepayments.browserswitch.BrowserSwitchResult;
-import com.braintreepayments.browserswitch.IBrowserSwitchClient;
-import com.paypal.androidsdk.PayPalCheckoutListener;
-import com.paypal.androidsdk.PayPalCheckoutResult;
-import com.paypal.androidsdk.PayPalClient;
-import com.paypal.androidsdk.PaymentHandler;
-import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
-import com.paypal.androidsdk.interfaces.KanyeListener;
-import com.paypal.androidsdk.models.CheckoutResult;
-import com.paypal.demo.models.Amount;
-import com.paypal.demo.models.Order;
-import com.paypal.demo.models.OrderRequest;
-import com.paypal.demo.models.PayPalUAT;
-import com.paypal.demo.models.Payee;
-import com.paypal.demo.models.PurchaseUnit;
-
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -36,11 +10,31 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.braintreepayments.api.models.CardBuilder;
+import com.paypal.androidsdk.PayPalCheckoutListener;
+import com.paypal.androidsdk.PayPalCheckoutResult;
+import com.paypal.androidsdk.PayPalClient;
+import com.paypal.androidsdk.PaymentHandler;
+import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
+import com.paypal.androidsdk.models.CheckoutResult;
+import com.paypal.demo.models.Amount;
+import com.paypal.demo.models.Order;
+import com.paypal.demo.models.OrderRequest;
+import com.paypal.demo.models.PayPalUAT;
+import com.paypal.demo.models.Payee;
+import com.paypal.demo.models.PurchaseUnit;
+
 import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+//import com.braintreepayments.browserswitch.BrowserSwitchClient;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, PayPalCheckoutListener {
 
@@ -97,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         if (payPalClient != null) {
-            payPalClient.onResume(this);
+            payPalClient.resume(this);
         }
     }
 
@@ -114,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mPayPalUAT = response.body();
                 try {
                     payPalClient = PayPalClient.newInstance(mPayPalUAT.getUAT(), MainActivity.this);
-                    payPalClient.onResume(MainActivity.this);
 //                    mPaymentHandler = new PaymentHandler(self, mPayPalUAT.getUAT(), mCheckoutCompleteListener);
                 } catch (InvalidArgumentException e) {
                     mUATLabel.setText("UAT: " + e.getMessage());

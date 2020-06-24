@@ -3,7 +3,6 @@ package com.paypal.androidsdk;
 import android.net.Uri;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
@@ -15,15 +14,11 @@ import com.braintreepayments.api.models.Authorization;
 import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.PayPalUAT;
 import com.braintreepayments.api.models.PaymentMethodNonce;
-//import com.braintreepayments.browserswitch.BrowserSwitchClient;
-import com.braintreepayments.browserswitch.BrowserSwitchClient;
-import com.braintreepayments.browserswitch.BrowserSwitchListener;
-import com.braintreepayments.browserswitch.BrowserSwitchResult;
-import com.braintreepayments.browserswitch.IBrowserSwitchClient;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
-import com.paypal.androidsdk.interfaces.KanyeListener;
 import com.paypal.androidsdk.interfaces.ValidatePaymentCallback;
 import com.paypal.androidsdk.models.CheckoutResult;
+
+//import com.braintreepayments.browserswitch.BrowserSwitchClient;
 
 public class PaymentHandler {
 
@@ -48,7 +43,7 @@ public class PaymentHandler {
     }
 
     public void checkoutWithCard(
-            final String orderID, final CardBuilder cardBuilder, final FragmentActivity activity, final IBrowserSwitchClient browserSwitchClient, final BrowserSwitchListener browserSwitchListener
+            final String orderID, final CardBuilder cardBuilder, final FragmentActivity activity
     ) {
 
         // trigger 3ds v1
@@ -97,7 +92,7 @@ public class PaymentHandler {
                                 .build()
                                 .toString();
 
-                        browserSwitchClient.start(123, Uri.parse(browserSwitchUrl), activity);
+//                        browserSwitchClient.start(123, Uri.parse(browserSwitchUrl), activity);
                     }
                 });
 

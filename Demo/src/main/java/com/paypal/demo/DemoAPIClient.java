@@ -12,7 +12,7 @@ import retrofit2.http.Query;
 
 public interface DemoAPIClient {
 
-    @GET("/uat")
+    @GET("/client-token")
     Call<PayPalUAT> getPayPalUAT(@Query("countryCode") String countryCode);
 
     @POST("/order")
