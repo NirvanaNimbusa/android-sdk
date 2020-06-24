@@ -15,10 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.models.CardBuilder;
+import com.paypal.androidsdk.CheckoutClient;
 import com.paypal.androidsdk.PayPalCheckoutListener;
 import com.paypal.androidsdk.PayPalCheckoutResult;
-import com.paypal.androidsdk.CheckoutClient;
-import com.paypal.androidsdk.PaymentHandler;
 import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
 import com.paypal.androidsdk.models.CheckoutResult;
 import com.paypal.demo.models.Amount;
@@ -41,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "MainActivity";
 
     // properties
-    private PaymentHandler mPaymentHandler;
     private CheckoutCompleteListener mCheckoutCompleteListener;
     private DemoAPIClient mDemoClient;
     private PayPalUAT mPayPalUAT;
@@ -108,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mPayPalUAT = response.body();
                 try {
                     checkoutClient = new CheckoutClient(mPayPalUAT.getUAT(), MainActivity.this);
-//                    mPaymentHandler = new PaymentHandler(self, mPayPalUAT.getUAT(), mCheckoutCompleteListener);
                 } catch (InvalidArgumentException e) {
                     mUATLabel.setText("UAT: " + e.getMessage());
                     e.printStackTrace();
@@ -202,8 +199,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                .cvv("123");
 
         checkoutClient.payWithCard(cardBuilder, mOrderID, this, mCheckoutCompleteListener);
-
-//        mPaymentHandler.checkoutWithCard(mOrderID, null, this, browserSwitchClient, this);
     }
     private void initiatePayPalCheckout() {
         checkoutClient.payWithPayPal(mOrderID, this);
