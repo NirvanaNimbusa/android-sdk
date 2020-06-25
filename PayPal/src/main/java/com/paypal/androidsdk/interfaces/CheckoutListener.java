@@ -1,16 +1,14 @@
 package com.paypal.androidsdk.interfaces;
 
+import androidx.annotation.Nullable;
+
 import com.braintreepayments.api.interfaces.BraintreeListener;
 import com.paypal.androidsdk.models.CheckoutResult;
 
 /**
  * OPTION 2: one listener
  */
-public interface CheckoutCompleteListener {
+public interface CheckoutListener {
 
-    void onCheckoutComplete(CheckoutResult result);
-
-    void onCheckoutError(Exception exception);
-
-    void onCheckoutValidationRequired();
+    void onResult(@Nullable Exception error, @Nullable CheckoutResult result);
 }

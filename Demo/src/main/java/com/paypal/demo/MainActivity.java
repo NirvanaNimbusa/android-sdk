@@ -2,7 +2,6 @@ package com.paypal.demo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +16,7 @@ import com.braintreepayments.api.models.CardBuilder;
 import com.paypal.androidsdk.CheckoutClient;
 import com.paypal.androidsdk.PayPalCheckoutListener;
 import com.paypal.androidsdk.PayPalCheckoutResult;
-import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
+import com.paypal.androidsdk.interfaces.CheckoutListener;
 import com.paypal.androidsdk.models.CheckoutResult;
 import com.paypal.demo.models.Amount;
 import com.paypal.demo.models.Order;
@@ -25,6 +24,8 @@ import com.paypal.demo.models.OrderRequest;
 import com.paypal.demo.models.PayPalUAT;
 import com.paypal.demo.models.Payee;
 import com.paypal.demo.models.PurchaseUnit;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -34,10 +35,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements PayPalCheckoutListener {
 
-    private static final String TAG = "MainActivity";
-
-    // properties
-    private CheckoutCompleteListener mCheckoutCompleteListener;
+    private CheckoutListener mCheckoutListener;
     private DemoAPIClient mDemoClient;
     private PayPalUAT mPayPalUAT;
     private String mOrderID;
@@ -71,30 +69,49 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
         }
     }
 
-    // activity setup
+    private Exception createUATNotFoundError() {
+        return new IllegalStateException(getString(R.string.error_uat_not_found));
+    }
 
     private void fetchUAT() {
-        final AppCompatActivity self = this;
-        mUATLabel.setText("UAT: ... fetching");
+        mUATLabel.setText(R.string.uat_fetching);
 
         Call<PayPalUAT> call = mDemoClient.getPayPalUAT("US");
         call.enqueue(new Callback<PayPalUAT>() {
             @Override
-            public void onResponse(Call<PayPalUAT> call, Response<PayPalUAT> response) {
+            public void onResponse(@NotNull Call<PayPalUAT> call, @NotNull Response<PayPalUAT> response) {
+                Exception error = null;
+                String uatString = null;
+
                 mPayPalUAT = response.body();
-                try {
-                    checkoutClient = new CheckoutClient(mPayPalUAT.getUAT(), MainActivity.this);
-                } catch (InvalidArgumentException e) {
-                    mUATLabel.setText("UAT: " + e.getMessage());
-                    e.printStackTrace();
+                if (mPayPalUAT == null) {
+                    error = createUATNotFoundError();
+                } else {
+                    try {
+                        uatString = mPayPalUAT.getUAT();
+                        if (uatString == null) {
+                            error = createUATNotFoundError();
+                        } else {
+                            checkoutClient = new CheckoutClient(uatString, MainActivity.this);
+                        }
+                    } catch (InvalidArgumentException e) {
+                        error = e;
+                    }
                 }
 
-                mUATLabel.setText("UAT: " + mPayPalUAT.getUAT());
+                if (error != null) {
+                    mUATLabel.setText(getString(R.string.uat_display, error.getMessage()));
+                    error.printStackTrace();
+                }
+
+                if (uatString != null) {
+                    mUATLabel.setText(getString(R.string.uat_display, uatString));
+                }
             }
 
             @Override
-            public void onFailure(Call<PayPalUAT> call, Throwable e) {
-                mUATLabel.setText("UAT: " + e.getMessage());
+            public void onFailure(@NotNull Call<PayPalUAT> call, @NotNull Throwable e) {
+                mUATLabel.setText(getString(R.string.uat_display, e.getMessage()));
             }
         });
     }
@@ -121,37 +138,41 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
         orderRequest.setPurchaesUnits(purchaseUnits);
 
         // Fetch order
-        mOrderIDLabel.setText("Order ID: ... fetching");
+        mOrderIDLabel.setText(R.string.order_id_fetching);
         Call<Order> call = mDemoClient.fetchOrderID("US", orderRequest);
         call.enqueue(new Callback<Order>() {
             @Override
-            public void onResponse(Call<Order> call, Response<Order> response) {
-                mOrderID = response.body().getID();
-                mOrderIDLabel.setText("Order ID: " + mOrderID);
+            public void onResponse(@NotNull Call<Order> call, @NotNull Response<Order> response) {
+                Order order = response.body();
+                if (order != null) {
+                    mOrderID = order.getID();
+                }
+
+                if (mOrderID == null) {
+                    mOrderIDLabel.setText(getString(R.string.error_order_id_not_found));
+                } else {
+                    mOrderIDLabel.setText(getString(R.string.order_id_display, mOrderID));
+                }
             }
 
             @Override
-            public void onFailure(Call<Order> call, Throwable t) {
-                mOrderIDLabel.setText("Order ID: error" + t.getMessage());
+            public void onFailure(@NotNull Call<Order> call, @NotNull Throwable t) {
+                mOrderIDLabel.setText(getString(R.string.order_id_error));
             }
         });
     }
 
     private void setUpListeners() {
-        mCheckoutCompleteListener = new CheckoutCompleteListener() {
+        mCheckoutListener = new CheckoutListener() {
             @Override
-            public void onCheckoutComplete(CheckoutResult result) {
-                mStatusLabel.setText("Checkout success: " + result.getOrderID());
-            }
-
-            @Override
-            public void onCheckoutError(Exception e) {
-                mStatusLabel.setText("Checkout failed: " + e.getMessage());
-            }
-
-            @Override
-            public void onCheckoutValidationRequired() {
-                Log.d(TAG, "CHECKOUT 3DS VALIDATION REQUIRED");
+            public void onResult(@Nullable Exception error, @Nullable CheckoutResult result) {
+                String status = null;
+                if (result != null) {
+                    status = getString(R.string.checkout_success, result.getOrderID());
+                } else if (error != null) {
+                    status = getString(R.string.checkout_error, error.getMessage());
+                }
+                mStatusLabel.setText(status);
             }
         };
     }
@@ -159,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
     // payment handler checkout implementations
 
     public void initiateCardCheckout(View view) {
-        mStatusLabel.setText("Checking out with card ...");
+        mStatusLabel.setText(getString(R.string.checkout_initiated));
 
         // trigger 3ds v1
         CardBuilder cardBuilder = new CardBuilder()
@@ -176,14 +197,12 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
 //                .expirationYear("2023")
 //                .cvv("123");
 
-        checkoutClient.payWithCard(cardBuilder, mOrderID, this, mCheckoutCompleteListener);
+        checkoutClient.payWithCard(cardBuilder, mOrderID, this, mCheckoutListener);
     }
 
     public void initiatePayPalCheckout(View view) {
         checkoutClient.payWithPayPal(mOrderID, this);
     }
-
-    // menu bar
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -201,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
             case R.id.reset:
                 fetchUAT();
                 mOrderID = null;
-                mOrderIDLabel.setText("Order ID: (empty)");
+                mOrderIDLabel.setText(getString(R.string.order_id_placeholder));
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -209,6 +228,6 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
 
     @Override
     public void onResult(@Nullable Exception e, @Nullable PayPalCheckoutResult result) {
-        Log.d("Ye", "Yeezy");
+        // TODO: process result
     }
 }

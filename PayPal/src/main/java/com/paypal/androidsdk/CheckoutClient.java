@@ -19,7 +19,7 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.browserswitch.BrowserSwitchClient;
 import com.braintreepayments.browserswitch.BrowserSwitchListener;
 import com.braintreepayments.browserswitch.BrowserSwitchResult;
-import com.paypal.androidsdk.interfaces.CheckoutCompleteListener;
+import com.paypal.androidsdk.interfaces.CheckoutListener;
 import com.paypal.androidsdk.models.CheckoutResult;
 
 public class CheckoutClient {
@@ -42,7 +42,7 @@ public class CheckoutClient {
 
     public void payWithCard(
         CardBuilder cardBuilder, final String orderId, final FragmentActivity activity,
-        final CheckoutCompleteListener listener
+        final CheckoutListener listener
     ) {
         Card.tokenize(braintreeFragment, cardBuilder, new PaymentMethodNonceCallback() {
             @Override
@@ -63,7 +63,7 @@ public class CheckoutClient {
 
     private void validatePaymentMethodNonce(
         PaymentMethodNonce paymentMethodNonce, final String orderId,
-        final FragmentActivity activity, final CheckoutCompleteListener listener) {
+        final FragmentActivity activity, final CheckoutListener listener) {
         String path = ValidatePayment.createValidationUrl(payPalUAT, orderId);
         String data = ValidatePayment.createValidationPayload(
                 payPalUAT, paymentMethodNonce.getNonce(), true);
@@ -81,7 +81,6 @@ public class CheckoutClient {
                     BraintreeApiErrorResponse errorResponse = (BraintreeApiErrorResponse) exception;
                     String contingencyUrl = ValidatePayment.parse3DSContingencyUrl(errorResponse);
                     if (contingencyUrl != null) {
-                        listener.onCheckoutValidationRequired();
                         performCheckoutWithCard3DS(contingencyUrl, activity);
                     } else {
                         listener.onCheckoutError(exception);
