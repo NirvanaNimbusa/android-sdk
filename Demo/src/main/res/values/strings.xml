@@ -9,4 +9,20 @@
     <string name="environment_preference">Environment</string>
     <string name="country_preference">Country</string>
 
+    <string name="uat_placeholder">UAT: (empty)</string>
+    <string name="uat_display">UAT: %1$s</string>
+
+    <string name="order_id_placeholder">Order ID: (empty)</string>
+    <string name="order_id_display">Order ID: %1$s</string>
+
+    <string name="status_placeholder">Status: </string>
+    <string name="status_display">Status: %1$s</string>
+
+    <string name="checkout_text">Checkout with:</string>
+
+    <string name="card_button">Card</string>
+    <string name="paypal_button">PayPal</string>
+
+    <string name="order_id_button">Get Order Id</string>
+
 </resources>

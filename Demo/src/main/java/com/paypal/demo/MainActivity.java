@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mSubmitCardButton;
     private Button mOrderIDButton;
     private Button mSubmitPayPalButton;
-    private Button mSubmitGooglePayButton;
 
     private TextView mStatusLabel;
     private TextView mUATLabel;
@@ -68,9 +67,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mSubmitPayPalButton = findViewById(R.id.submitPayPal);
         mSubmitPayPalButton.setOnClickListener(this);
-
-        mSubmitGooglePayButton = findViewById(R.id.submitGooglePay);
-        mSubmitGooglePayButton.setOnClickListener(this);
 
         mOrderIDButton = findViewById(R.id.orderIDButton);
         mOrderIDButton.setOnClickListener(this);
@@ -204,10 +200,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkoutClient.payWithPayPal(mOrderID, this);
     }
 
-    private void initiateGooglePayCheckout(){
-        checkoutClient.payWithGooglePay();
-    }
-
     // handle UI interaction
 
     @Override
@@ -218,9 +210,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.submitPayPal:
                 initiatePayPalCheckout();
-                break;
-            case R.id.submitGooglePay:
-                initiateGooglePayCheckout();
                 break;
             case R.id.orderIDButton:
                 fetchOrderID();
