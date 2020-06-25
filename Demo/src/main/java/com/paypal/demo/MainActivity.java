@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
         Call<PayPalUAT> call = mDemoClient.getPayPalUAT("US");
         call.enqueue(new Callback<PayPalUAT>() {
             @Override
-            public void onResponse(Call<PayPalUAT> call, Response<PayPalUAT> response) {
+            public void onResponse(@NonNull Call<PayPalUAT> call, @NonNull Response<PayPalUAT> response) {
                 Exception error = null;
                 String uatString = null;
 
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
             }
 
             @Override
-            public void onFailure(Call<PayPalUAT> call, Throwable e) {
+            public void onFailure(@NonNull Call<PayPalUAT> call, @NonNull Throwable e) {
                 mUATLabel.setText(getString(R.string.uat_display, e.getMessage()));
             }
         });
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
             }
 
             @Override
-            public void onFailure(Call<Order> call, Throwable t) {
+            public void onFailure(@NonNull Call<Order> call, @NonNull Throwable t) {
                 mOrderIDLabel.setText(getString(R.string.order_id_error));
             }
         });
