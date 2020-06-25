@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,8 +25,6 @@ import com.paypal.demo.models.OrderRequest;
 import com.paypal.demo.models.PayPalUAT;
 import com.paypal.demo.models.Payee;
 import com.paypal.demo.models.PurchaseUnit;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
         Call<PayPalUAT> call = mDemoClient.getPayPalUAT("US");
         call.enqueue(new Callback<PayPalUAT>() {
             @Override
-            public void onResponse(@NotNull Call<PayPalUAT> call, @NotNull Response<PayPalUAT> response) {
+            public void onResponse(Call<PayPalUAT> call, Response<PayPalUAT> response) {
                 Exception error = null;
                 String uatString = null;
 
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
             }
 
             @Override
-            public void onFailure(@NotNull Call<PayPalUAT> call, @NotNull Throwable e) {
+            public void onFailure(Call<PayPalUAT> call, Throwable e) {
                 mUATLabel.setText(getString(R.string.uat_display, e.getMessage()));
             }
         });
@@ -142,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
         Call<Order> call = mDemoClient.fetchOrderID("US", orderRequest);
         call.enqueue(new Callback<Order>() {
             @Override
-            public void onResponse(@NotNull Call<Order> call, @NotNull Response<Order> response) {
+            public void onResponse(@NonNull Call<Order> call, @NonNull Response<Order> response) {
                 Order order = response.body();
                 if (order != null) {
                     mOrderID = order.getID();
@@ -156,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements PayPalCheckoutLis
             }
 
             @Override
-            public void onFailure(@NotNull Call<Order> call, @NotNull Throwable t) {
+            public void onFailure(Call<Order> call, Throwable t) {
                 mOrderIDLabel.setText(getString(R.string.order_id_error));
             }
         });

@@ -52,7 +52,7 @@ public class CheckoutClient {
 
             @Override
             public void failure(Exception exception) {
-                listener.onCheckoutError(exception);
+                listener.onResult(exception, null);
             }
         });
     }
@@ -70,8 +70,9 @@ public class CheckoutClient {
         httpClient.post(path, data, new HttpResponseCallback() {
             @Override
             public void success(String responseBody) {
-                listener.onCheckoutComplete(
-                    new CheckoutResult(orderId, CheckoutResult.CheckoutType.CARD));
+                CheckoutResult result =
+                    new CheckoutResult(orderId, CheckoutResult.CheckoutType.CARD);
+                listener.onResult(null, result);
                 Log.d(TAG, String.format("VALIDATION SUCCESS: %S", responseBody));
             }
 
@@ -83,10 +84,10 @@ public class CheckoutClient {
                     if (contingencyUrl != null) {
                         performCheckoutWithCard3DS(contingencyUrl, activity);
                     } else {
-                        listener.onCheckoutError(exception);
+                        listener.onResult(exception, null);
                     }
                 } else {
-                    listener.onCheckoutError(exception);
+                    listener.onResult(exception, null);
                 }
             }
         });
