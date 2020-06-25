@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -33,9 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-//import com.braintreepayments.browserswitch.BrowserSwitchClient;
-
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, PayPalCheckoutListener {
+public class MainActivity extends AppCompatActivity implements PayPalCheckoutListener {
 
     private static final String TAG = "MainActivity";
 
@@ -44,11 +41,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DemoAPIClient mDemoClient;
     private PayPalUAT mPayPalUAT;
     private String mOrderID;
-
-    // UI elements
-    private Button mSubmitCardButton;
-    private Button mOrderIDButton;
-    private Button mSubmitPayPalButton;
 
     private TextView mStatusLabel;
     private TextView mUATLabel;
@@ -60,16 +52,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Set up UI elements
-        mSubmitCardButton = findViewById(R.id.submitCard);
-        mSubmitCardButton.setOnClickListener(this);
-
-        mSubmitPayPalButton = findViewById(R.id.submitPayPal);
-        mSubmitPayPalButton.setOnClickListener(this);
-
-        mOrderIDButton = findViewById(R.id.orderIDButton);
-        mOrderIDButton.setOnClickListener(this);
 
         mStatusLabel = findViewById(R.id.statusTextView);
         mUATLabel = findViewById(R.id.uatTextView);
@@ -117,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void fetchOrderID() {
+    public void fetchOrderId(View view) {
         // Construct order request
         // TODO: make this more concise
         Amount amount = new Amount();
@@ -176,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // payment handler checkout implementations
 
-    private void initiateCardCheckout() {
+    public void initiateCardCheckout(View view) {
         mStatusLabel.setText("Checking out with card ...");
 
         // trigger 3ds v1
@@ -196,25 +178,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         checkoutClient.payWithCard(cardBuilder, mOrderID, this, mCheckoutCompleteListener);
     }
-    private void initiatePayPalCheckout() {
+
+    public void initiatePayPalCheckout(View view) {
         checkoutClient.payWithPayPal(mOrderID, this);
-    }
-
-    // handle UI interaction
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.submitCard:
-                initiateCardCheckout();
-                break;
-            case R.id.submitPayPal:
-                initiatePayPalCheckout();
-                break;
-            case R.id.orderIDButton:
-                fetchOrderID();
-                break;
-        }
     }
 
     // menu bar
