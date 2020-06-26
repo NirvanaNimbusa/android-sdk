@@ -3,6 +3,7 @@ package com.paypal.androidsdk;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
@@ -33,7 +34,7 @@ public class CheckoutClient {
     private BraintreeFragment braintreeFragment;
     private BrowserSwitchClient browserSwitchClient;
 
-    public CheckoutClient(String uat, FragmentActivity activity) throws InvalidArgumentException {
+    public CheckoutClient(@NonNull String uat, @NonNull FragmentActivity activity) throws InvalidArgumentException {
         payPalUAT = (PayPalUAT) Authorization.fromString(uat);
         braintreeFragment = BraintreeFragment.newInstance(activity, payPalUAT.getBearer());
         httpClient = new PayPalHttpClient(payPalUAT.getPayPalURL(), payPalUAT.getBearer());
