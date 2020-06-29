@@ -35,6 +35,8 @@ public class CheckoutClient {
     private BraintreeFragment braintreeFragment;
     private BrowserSwitchClient browserSwitchClient;
 
+    private UriBuilder uriBuilder;
+
     public CheckoutClient(@NonNull String uat, @NonNull FragmentActivity activity) throws InvalidArgumentException {
         payPalUAT = (PayPalUAT) Authorization.fromString(uat);
         braintreeFragment = BraintreeFragment.newInstance(activity, payPalUAT.getBearer());
@@ -95,6 +97,8 @@ public class CheckoutClient {
     }
 
     private void performCheckoutWithCard3DS(String contingencyUrl, FragmentActivity activity) {
+//        Uri browserSwitchUri = uriBuilder.buildPayPalThreeDSecureUri(contingencyUrl);
+
         String redirectUri =
             String.format("%s://x-callback-url/paypal-sdk/paypal-checkout", URL_SCHEME);
 
@@ -106,6 +110,8 @@ public class CheckoutClient {
     }
 
     public void payWithPayPal(String orderId, FragmentActivity activity) {
+//        Uri browserSwitchUri = uriBuilder.buildPayPalCheckoutUri(orderId, payPalUAT);
+
         PayPalUAT.Environment environment = payPalUAT.getEnvironment();
 
         String baseURL = null;
