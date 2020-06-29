@@ -10,7 +10,7 @@ import retrofit2.Response
 class Merchant {
 
     private val demoClient=
-        RetrofitClientInstance.getInstance().create(DemoAPIClient::class.java)
+            RetrofitClient.sharedInstance.create(DemoAPIClient::class.java)
 
     fun fetchUAT(callback: (error: Throwable?, uat: String?) -> Unit) {
 
