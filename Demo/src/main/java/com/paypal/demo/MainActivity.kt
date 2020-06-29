@@ -8,15 +8,15 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.braintreepayments.api.models.CardBuilder
-import com.paypal.androidsdk.CheckoutClient
-import com.paypal.androidsdk.PayPalCheckoutListener
-import com.paypal.androidsdk.PayPalCheckoutResult
+import com.paypal.androidsdk.*
+import com.paypal.androidsdk.CheckoutResult
 import com.paypal.demo.models.Amount
 import com.paypal.demo.models.OrderRequest
 import com.paypal.demo.models.Payee
 import com.paypal.demo.models.PurchaseUnit
+import java.lang.Exception
 
-class MainActivity : AppCompatActivity(), PayPalCheckoutListener {
+class MainActivity : AppCompatActivity(), CheckoutListener {
 
     private val merchant = Merchant()
     private var checkoutClient: CheckoutClient? = null
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), PayPalCheckoutListener {
 
     override fun onResume() {
         super.onResume()
-        checkoutClient?.resume(this)
+        checkoutClient?.onResume(this)
     }
 
     private fun fetchUAT() {
@@ -86,7 +86,8 @@ class MainActivity : AppCompatActivity(), PayPalCheckoutListener {
             error?.let {
                 status = getString(R.string.checkout_error, it.message)
             } ?: run {
-                status = getString(R.string.checkout_success, result!!.orderID)
+                val orderId = (result as? CardCheckoutResult)?.orderId
+                status = getString(R.string.checkout_success, orderId)
             }
             statusLabel.text = status
         }
@@ -118,7 +119,7 @@ class MainActivity : AppCompatActivity(), PayPalCheckoutListener {
         }
     }
 
-    override fun onResult(e: Exception?, result: PayPalCheckoutResult?) {
+    override fun onCheckoutComplete(error: Exception?, result: CheckoutResult?) {
         // TODO: process result
     }
 }

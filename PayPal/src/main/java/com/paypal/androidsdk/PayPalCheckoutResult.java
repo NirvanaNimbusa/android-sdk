@@ -2,7 +2,7 @@ package com.paypal.androidsdk;
 
 import android.net.Uri;
 
-public class PayPalCheckoutResult {
+public class PayPalCheckoutResult implements CheckoutResult {
 
     private String payerId;
     private String intent;

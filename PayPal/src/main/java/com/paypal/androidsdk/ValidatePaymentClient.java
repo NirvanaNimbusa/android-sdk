@@ -5,9 +5,7 @@ import android.util.Log;
 
 import com.braintreepayments.api.exceptions.BraintreeApiErrorResponse;
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
-import com.braintreepayments.api.internal.BraintreeHttpClient;
 import com.braintreepayments.api.models.PayPalUAT;
-import com.paypal.androidsdk.interfaces.ValidatePaymentCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,12 +16,12 @@ import java.util.Map;
 
 class ValidatePaymentClient {
 
-    private PayPalHttpClient mHTTPClient;
+    private AuthorizedHttpClient mHTTPClient;
     private PayPalUAT mPayPalUAT;
 
     public ValidatePaymentClient(PayPalUAT payPalUAT) {
         this.mPayPalUAT = payPalUAT;
-        mHTTPClient = new PayPalHttpClient(mPayPalUAT.getPayPalURL(), payPalUAT.getBearer());
+        mHTTPClient = new AuthorizedHttpClient(mPayPalUAT.getPayPalURL(), payPalUAT.getBearer());
     }
 
     protected void validatePaymentMethod(String orderID,

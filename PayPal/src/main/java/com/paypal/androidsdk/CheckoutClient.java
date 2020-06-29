@@ -20,16 +20,17 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.browserswitch.BrowserSwitchClient;
 import com.braintreepayments.browserswitch.BrowserSwitchListener;
 import com.braintreepayments.browserswitch.BrowserSwitchResult;
-import com.paypal.androidsdk.interfaces.CheckoutListener;
-import com.paypal.androidsdk.models.CheckoutResult;
 
 public class CheckoutClient {
 
     private static final String TAG = "PayPalClient";
     private static final String URL_SCHEME = "com.paypal.demo.braintree";
 
+    private static final int REQUEST_CODE_CARD_CHECKOUT = 1;
+    private static final int REQUEST_CODE_PAYPAL_CHECKOUT = 2;
+
     private PayPalUAT payPalUAT;
-    private PayPalHttpClient httpClient;
+    private AuthorizedHttpClient httpClient;
 
     private BraintreeFragment braintreeFragment;
     private BrowserSwitchClient browserSwitchClient;
@@ -37,7 +38,7 @@ public class CheckoutClient {
     public CheckoutClient(@NonNull String uat, @NonNull FragmentActivity activity) throws InvalidArgumentException {
         payPalUAT = (PayPalUAT) Authorization.fromString(uat);
         braintreeFragment = BraintreeFragment.newInstance(activity, payPalUAT.getBearer());
-        httpClient = new PayPalHttpClient(payPalUAT.getPayPalURL(), payPalUAT.getBearer());
+        httpClient = new AuthorizedHttpClient(payPalUAT.getPayPalURL(), payPalUAT.getBearer());
         browserSwitchClient = BrowserSwitchClient.newInstance(URL_SCHEME);
     }
 
@@ -53,12 +54,12 @@ public class CheckoutClient {
 
             @Override
             public void failure(Exception exception) {
-                listener.onResult(exception, null);
+                listener.onCheckoutComplete(exception, null);
             }
         });
     }
 
-    public void resume(FragmentActivity activity) {
+    public void onResume(FragmentActivity activity) {
         browserSwitchClient.deliverResult(activity, createBrowserSwitchListener(activity));
     }
 
@@ -71,9 +72,8 @@ public class CheckoutClient {
         httpClient.post(path, data, new HttpResponseCallback() {
             @Override
             public void success(String responseBody) {
-                CheckoutResult result =
-                    new CheckoutResult(orderId, CheckoutResult.CheckoutType.CARD);
-                listener.onResult(null, result);
+                CheckoutResult result = CardCheckoutResult.newInstance(orderId);
+                listener.onCheckoutComplete(null, result);
                 Log.d(TAG, String.format("VALIDATION SUCCESS: %S", responseBody));
             }
 
@@ -85,10 +85,10 @@ public class CheckoutClient {
                     if (contingencyUrl != null) {
                         performCheckoutWithCard3DS(contingencyUrl, activity);
                     } else {
-                        listener.onResult(exception, null);
+                        listener.onCheckoutComplete(exception, null);
                     }
                 } else {
-                    listener.onResult(exception, null);
+                    listener.onCheckoutComplete(exception, null);
                 }
             }
         });
@@ -102,7 +102,7 @@ public class CheckoutClient {
                 .buildUpon()
                 .appendQueryParameter("redirect_uri", redirectUri)
                 .build();
-        browserSwitchClient.start(123, browserSwitchUrl, activity, createBrowserSwitchListener(activity));
+        browserSwitchClient.start(REQUEST_CODE_CARD_CHECKOUT, browserSwitchUrl, activity, createBrowserSwitchListener(activity));
     }
 
     public void payWithPayPal(String orderId, FragmentActivity activity) {
@@ -132,24 +132,26 @@ public class CheckoutClient {
                 .appendQueryParameter("native_xo", "1")
                 .build();
 
-        browserSwitchClient.start(456, browserSwitchUrl, activity, createBrowserSwitchListener(activity));
+        browserSwitchClient.start(REQUEST_CODE_PAYPAL_CHECKOUT, browserSwitchUrl, activity, createBrowserSwitchListener(activity));
     }
 
     private static BrowserSwitchListener createBrowserSwitchListener(final FragmentActivity activity) {
         return new BrowserSwitchListener() {
             @Override
             public void onBrowserSwitchResult(int requestCode, BrowserSwitchResult browserSwitchResult, @Nullable Uri uri) {
-                if (activity instanceof PayPalCardTokenizationListener) {
-                    final PayPalCardTokenizationListener cardTokenizationListener =
-                            (PayPalCardTokenizationListener) activity;
-                    PayPalCardTokenizationResult cardTokenizationResult = PayPalCardTokenizationResult.from(uri);
-                    cardTokenizationListener.onResult(null, cardTokenizationResult);
-
-                } else if (activity instanceof PayPalCheckoutListener) {
-                    final PayPalCheckoutListener checkoutListener = (PayPalCheckoutListener) activity;
-                    if (uri != null) {
-                        PayPalCheckoutResult checkoutResult = PayPalCheckoutResult.from(uri);
-                        checkoutListener.onResult(null, checkoutResult);
+                if (activity instanceof CheckoutListener) {
+                    CheckoutListener listener = ((CheckoutListener) activity);
+                    switch (requestCode) {
+                        case REQUEST_CODE_CARD_CHECKOUT:
+                            CardCheckoutResult cardTokenizationResult = CardCheckoutResult.from(uri);
+                            listener.onCheckoutComplete(null, cardTokenizationResult);
+                            break;
+                        case REQUEST_CODE_PAYPAL_CHECKOUT:
+                            if (uri != null) {
+                                PayPalCheckoutResult checkoutResult = PayPalCheckoutResult.from(uri);
+                                listener.onCheckoutComplete(null, checkoutResult);
+                            }
+                            break;
                     }
                 }
             }

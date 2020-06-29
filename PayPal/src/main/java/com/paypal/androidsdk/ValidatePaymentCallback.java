@@ -1,4 +1,4 @@
-package com.paypal.androidsdk.interfaces;
+package com.paypal.androidsdk;
 
 /**
  * Interface to handle validate_payment_method callback

@@ -15,11 +15,11 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Map;
 
-public class PayPalHttpClient extends HttpClient {
+public class AuthorizedHttpClient extends HttpClient {
 
     private final String mBearer;
 
-    public PayPalHttpClient(String baseUrl, String bearer) {
+    public AuthorizedHttpClient(String baseUrl, String bearer) {
         super();
 
         mBaseUrl = baseUrl;
