@@ -8,13 +8,14 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.braintreepayments.api.models.CardBuilder
-import com.paypal.androidsdk.*
+import com.paypal.androidsdk.CardCheckoutResult
+import com.paypal.androidsdk.CheckoutClient
+import com.paypal.androidsdk.CheckoutListener
 import com.paypal.androidsdk.CheckoutResult
 import com.paypal.demo.models.Amount
 import com.paypal.demo.models.OrderRequest
 import com.paypal.demo.models.Payee
 import com.paypal.demo.models.PurchaseUnit
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity(), CheckoutListener {
 
