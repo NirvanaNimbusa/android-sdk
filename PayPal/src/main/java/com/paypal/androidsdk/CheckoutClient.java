@@ -42,6 +42,7 @@ public class CheckoutClient {
         braintreeFragment = BraintreeFragment.newInstance(activity, payPalUAT.getBearer());
         httpClient = new AuthorizedHttpClient(payPalUAT.getPayPalURL(), payPalUAT.getBearer());
         browserSwitchClient = BrowserSwitchClient.newInstance(URL_SCHEME);
+        uriBuilder = new UriBuilder();
     }
 
     public void payWithCard(
@@ -68,7 +69,7 @@ public class CheckoutClient {
     private void validatePaymentMethodNonce(
         PaymentMethodNonce paymentMethodNonce, final String orderId,
         final FragmentActivity activity, final CheckoutListener listener) {
-        String path = ValidatePayment.createValidationUrl(payPalUAT, orderId);
+        String path = uriBuilder.buildValidatePaymentUri(orderId, payPalUAT).toString();
         String data = ValidatePayment.createValidationPayload(
                 payPalUAT, paymentMethodNonce.getNonce(), true);
         httpClient.post(path, data, new HttpResponseCallback() {
@@ -97,47 +98,12 @@ public class CheckoutClient {
     }
 
     private void performCheckoutWithCard3DS(String contingencyUrl, FragmentActivity activity) {
-//        Uri browserSwitchUri = uriBuilder.buildPayPalThreeDSecureUri(contingencyUrl);
-
-        String redirectUri =
-            String.format("%s://x-callback-url/paypal-sdk/paypal-checkout", URL_SCHEME);
-
-        Uri browserSwitchUrl = Uri.parse(contingencyUrl)
-                .buildUpon()
-                .appendQueryParameter("redirect_uri", redirectUri)
-                .build();
+        Uri browserSwitchUrl = uriBuilder.buildVerifyThreeDSecureUri(contingencyUrl);
         browserSwitchClient.start(REQUEST_CODE_CARD_CHECKOUT, browserSwitchUrl, activity, createBrowserSwitchListener(activity));
     }
 
     public void payWithPayPal(String orderId, FragmentActivity activity) {
-//        Uri browserSwitchUri = uriBuilder.buildPayPalCheckoutUri(orderId, payPalUAT);
-
-        PayPalUAT.Environment environment = payPalUAT.getEnvironment();
-
-        String baseURL = null;
-        switch (environment) {
-            case PRODUCTION:
-                baseURL = "https://www.paypal.com";
-                break;
-            case SANDBOX:
-                baseURL = "https://www.sandbox.paypal.com";
-                break;
-            case STAGING:
-                baseURL = "https://www.msmaster.qa.paypal.com";
-                break;
-        }
-
-        String redirectUri =
-                String.format("%s://x-callback-url/paypal-sdk/card-contingency", URL_SCHEME);
-
-        Uri browserSwitchUrl = Uri.parse(baseURL)
-                .buildUpon()
-                .appendPath("checkoutnow")
-                .appendQueryParameter("token", orderId)
-                .appendQueryParameter("redirect_uri", redirectUri)
-                .appendQueryParameter("native_xo", "1")
-                .build();
-
+        Uri browserSwitchUrl = uriBuilder.buildPayPalCheckoutUri(orderId, payPalUAT);
         browserSwitchClient.start(REQUEST_CODE_PAYPAL_CHECKOUT, browserSwitchUrl, activity, createBrowserSwitchListener(activity));
     }
 

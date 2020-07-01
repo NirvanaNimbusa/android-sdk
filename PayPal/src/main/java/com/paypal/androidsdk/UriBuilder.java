@@ -9,8 +9,10 @@ import com.braintreepayments.api.models.PayPalUAT;
 class UriBuilder {
 
     private static final String URL_SCHEME = "com.paypal.demo.braintree";
+
     private static final String REDIRECT_URI_THREED_SECURE =
             String.format("%s://x-callback-url/paypal-sdk/card-contingency", URL_SCHEME);
+
     private static final String REDIRECT_URI_PAYPAL_CHECKOUT =
             String.format("%s://x-callback-url/paypal-sdk/paypal-checkout", URL_SCHEME);
 
