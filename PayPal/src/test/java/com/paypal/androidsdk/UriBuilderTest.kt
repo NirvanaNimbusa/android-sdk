@@ -24,13 +24,23 @@ class UriBuilderTest {
     }
 
     @Test
-    fun testBuildValidatePaymentUri() {
+    fun buildValidatePaymentUri() {
         val sut = UriBuilder()
         whenever(uat.payPalURL).thenReturn("https://sample.com")
 
         val result = sut.buildValidatePaymentUri("sampleOrderId", uat)
         val expectedUrl =
             "https://sample.com/v2/checkout/orders/sampleOrderId/validate-payment-method"
+        assertEquals(result, Uri.parse(expectedUrl))
+    }
+
+    @Test
+    fun buildVerifyThreeDSecureUri() {
+        val sut = UriBuilder()
+
+        val result = sut.buildVerifyThreeDSecureUri("https://contingency.com")
+        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fpaypal-checkout"
+        val expectedUrl = "https://contingency.com?redirect_uri=$encodedRedirectUri"
         assertEquals(result, Uri.parse(expectedUrl))
     }
 }
