@@ -29,7 +29,30 @@ class UriBuilder {
     }
 
     public Uri buildPayPalCheckoutUri(@NonNull String orderId, @NonNull PayPalUAT uat) {
-        // TODO: implement
-        return null;
+        PayPalUAT.Environment environment = uat.getEnvironment();
+
+        String baseURL = null;
+        switch (environment) {
+            case PRODUCTION:
+                baseURL = "https://www.paypal.com";
+                break;
+            case SANDBOX:
+                baseURL = "https://www.sandbox.paypal.com";
+                break;
+            case STAGING:
+                baseURL = "https://www.msmaster.qa.paypal.com";
+                break;
+        }
+
+        String redirectUri =
+                String.format("%s://x-callback-url/paypal-sdk/card-contingency", URL_SCHEME);
+
+        return Uri.parse(baseURL)
+                .buildUpon()
+                .appendPath("checkoutnow")
+                .appendQueryParameter("token", orderId)
+                .appendQueryParameter("redirect_uri", redirectUri)
+                .appendQueryParameter("native_xo", "1")
+                .build();
     }
 }

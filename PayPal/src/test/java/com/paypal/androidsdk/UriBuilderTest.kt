@@ -43,4 +43,46 @@ class UriBuilderTest {
         val expectedUrl = "https://contingency.com?redirect_uri=$encodedRedirectUri"
         assertEquals(result, Uri.parse(expectedUrl))
     }
+
+    @Test
+    fun buildPayPalCheckoutUri_whenEnvIsProduction_returnsProductionUrl() {
+        val sut = UriBuilder()
+        whenever(uat.environment).thenReturn(PayPalUAT.Environment.PRODUCTION)
+
+        val result = sut.buildPayPalCheckoutUri("sampleOrderId", uat)
+
+        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fcard-contingency"
+        val query = "token=sampleOrderId&redirect_uri=$encodedRedirectUri&native_xo=1"
+
+        val expectedUrl = "https://www.paypal.com/checkoutnow?$query"
+        assertEquals(result, Uri.parse(expectedUrl))
+    }
+
+    @Test
+    fun buildPayPalCheckoutUri_whenEnvIsSandbox_returnsSandboxUrl() {
+        val sut = UriBuilder()
+        whenever(uat.environment).thenReturn(PayPalUAT.Environment.SANDBOX)
+
+        val result = sut.buildPayPalCheckoutUri("sampleOrderId", uat)
+
+        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fcard-contingency"
+        val query = "token=sampleOrderId&redirect_uri=$encodedRedirectUri&native_xo=1"
+
+        val expectedUrl = "https://www.sandbox.paypal.com/checkoutnow?$query"
+        assertEquals(result, Uri.parse(expectedUrl))
+    }
+
+    @Test
+    fun buildPayPalCheckoutUri_whenEnvIsStaging_returnsStagingUrl() {
+        val sut = UriBuilder()
+        whenever(uat.environment).thenReturn(PayPalUAT.Environment.STAGING)
+
+        val result = sut.buildPayPalCheckoutUri("sampleOrderId", uat)
+
+        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fcard-contingency"
+        val query = "token=sampleOrderId&redirect_uri=$encodedRedirectUri&native_xo=1"
+
+        val expectedUrl = "https://www.msmaster.qa.paypal.com/checkoutnow?$query"
+        assertEquals(result, Uri.parse(expectedUrl))
+    }
 }
