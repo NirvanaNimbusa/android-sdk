@@ -9,6 +9,10 @@ import com.braintreepayments.api.models.PayPalUAT;
 class UriBuilder {
 
     private static final String URL_SCHEME = "com.paypal.demo.braintree";
+    private static final String REDIRECT_URI_THREED_SECURE =
+            String.format("%s://x-callback-url/paypal-sdk/card-contingency", URL_SCHEME);
+    private static final String REDIRECT_URI_PAYPAL_CHECKOUT =
+            String.format("%s://x-callback-url/paypal-sdk/paypal-checkout", URL_SCHEME);
 
     public Uri buildValidatePaymentUri(@NonNull String orderId, @NonNull PayPalUAT uat) {
         String path = String.format("v2/checkout/orders/%s/validate-payment-method", orderId);
@@ -20,11 +24,9 @@ class UriBuilder {
     }
 
     public Uri buildVerifyThreeDSecureUri(@NonNull String contingencyUrl) {
-        String redirectUri =
-                String.format("%s://x-callback-url/paypal-sdk/paypal-checkout", URL_SCHEME);
         return Uri.parse(contingencyUrl)
                 .buildUpon()
-                .appendQueryParameter("redirect_uri", redirectUri)
+                .appendQueryParameter("redirect_uri", REDIRECT_URI_THREED_SECURE)
                 .build();
     }
 
@@ -44,14 +46,11 @@ class UriBuilder {
                 break;
         }
 
-        String redirectUri =
-                String.format("%s://x-callback-url/paypal-sdk/card-contingency", URL_SCHEME);
-
         return Uri.parse(baseURL)
                 .buildUpon()
                 .appendPath("checkoutnow")
                 .appendQueryParameter("token", orderId)
-                .appendQueryParameter("redirect_uri", redirectUri)
+                .appendQueryParameter("redirect_uri", REDIRECT_URI_PAYPAL_CHECKOUT)
                 .appendQueryParameter("native_xo", "1")
                 .build();
     }

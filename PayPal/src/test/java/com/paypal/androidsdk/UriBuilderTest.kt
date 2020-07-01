@@ -39,7 +39,7 @@ class UriBuilderTest {
         val sut = UriBuilder()
 
         val result = sut.buildVerifyThreeDSecureUri("https://contingency.com")
-        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fpaypal-checkout"
+        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fcard-contingency"
         val expectedUrl = "https://contingency.com?redirect_uri=$encodedRedirectUri"
         assertEquals(result, Uri.parse(expectedUrl))
     }
@@ -51,7 +51,7 @@ class UriBuilderTest {
 
         val result = sut.buildPayPalCheckoutUri("sampleOrderId", uat)
 
-        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fcard-contingency"
+        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fpaypal-checkout"
         val query = "token=sampleOrderId&redirect_uri=$encodedRedirectUri&native_xo=1"
 
         val expectedUrl = "https://www.paypal.com/checkoutnow?$query"
@@ -65,7 +65,7 @@ class UriBuilderTest {
 
         val result = sut.buildPayPalCheckoutUri("sampleOrderId", uat)
 
-        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fcard-contingency"
+        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fpaypal-checkout"
         val query = "token=sampleOrderId&redirect_uri=$encodedRedirectUri&native_xo=1"
 
         val expectedUrl = "https://www.sandbox.paypal.com/checkoutnow?$query"
@@ -79,7 +79,7 @@ class UriBuilderTest {
 
         val result = sut.buildPayPalCheckoutUri("sampleOrderId", uat)
 
-        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fcard-contingency"
+        val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fpaypal-checkout"
         val query = "token=sampleOrderId&redirect_uri=$encodedRedirectUri&native_xo=1"
 
         val expectedUrl = "https://www.msmaster.qa.paypal.com/checkoutnow?$query"
