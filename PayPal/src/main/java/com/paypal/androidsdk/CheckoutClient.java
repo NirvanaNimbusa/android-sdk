@@ -69,9 +69,16 @@ public class CheckoutClient {
     private void validatePaymentMethodNonce(
         PaymentMethodNonce paymentMethodNonce, final String orderId,
         final FragmentActivity activity, final CheckoutListener listener) {
-        String path = browserSwitchHelper.buildValidatePaymentUri(orderId, payPalUAT).toString();
-        String data = ValidatePayment.createValidationPayload(
-                payPalUAT, paymentMethodNonce.getNonce(), true);
+
+        ValidatePaymentRequest validatePaymentRequest = new ValidatePaymentRequest.Builder()
+                .uat(payPalUAT)
+                .orderId(orderId)
+                .paymentMethodNonce(paymentMethodNonce)
+                .threeDSecureRequested(true)
+                .build();
+
+        String path = validatePaymentRequest.getHttpUrl().toString();
+        String data = validatePaymentRequest.getHttpBody();
         httpClient.post(path, data, new HttpResponseCallback() {
             @Override
             public void success(String responseBody) {
@@ -83,6 +90,9 @@ public class CheckoutClient {
             @Override
             public void failure(Exception exception) {
                 if (exception instanceof BraintreeApiErrorResponse) {
+//                    ValidatePaymentErrorResponse errorResponse =
+//                        ValidatePaymentErrorResponse.from((BraintreeApiErrorResponse) exception);
+
                     BraintreeApiErrorResponse errorResponse = (BraintreeApiErrorResponse) exception;
                     String contingencyUrl = ValidatePayment.parse3DSContingencyUrl(errorResponse);
                     if (contingencyUrl != null) {

@@ -24,17 +24,6 @@ class BrowserSwitchHelperTest {
     }
 
     @Test
-    fun buildValidatePaymentUri() {
-        val sut = BrowserSwitchHelper()
-        whenever(uat.payPalURL).thenReturn("https://sample.com")
-
-        val result = sut.buildValidatePaymentUri("sampleOrderId", uat)
-        val expectedUrl =
-            "https://sample.com/v2/checkout/orders/sampleOrderId/validate-payment-method"
-        assertEquals(result, Uri.parse(expectedUrl))
-    }
-
-    @Test
     fun buildVerifyThreeDSecureUri() {
         val sut = BrowserSwitchHelper()
 

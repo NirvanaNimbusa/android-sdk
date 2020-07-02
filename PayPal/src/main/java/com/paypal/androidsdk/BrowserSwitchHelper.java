@@ -16,15 +16,6 @@ class BrowserSwitchHelper {
     private static final String REDIRECT_URI_PAYPAL_CHECKOUT =
             String.format("%s://x-callback-url/paypal-sdk/paypal-checkout", URL_SCHEME);
 
-    public Uri buildValidatePaymentUri(@NonNull String orderId, @NonNull PayPalUAT uat) {
-        String path = String.format("v2/checkout/orders/%s/validate-payment-method", orderId);
-        String baseUrl = uat.getPayPalURL();
-        return Uri.parse(baseUrl)
-                .buildUpon()
-                .appendEncodedPath(path)
-                .build();
-    }
-
     public Uri buildVerifyThreeDSecureUri(@NonNull String contingencyUrl) {
         return Uri.parse(contingencyUrl)
                 .buildUpon()
