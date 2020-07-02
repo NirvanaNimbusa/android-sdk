@@ -6,15 +6,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class ValidatePaymentErrorResponse {
+class ValidatePaymentError {
 
     private String contingencyUrl;
 
-    static ValidatePaymentErrorResponse from(BraintreeApiErrorResponse errorResponse) {
-        return new ValidatePaymentErrorResponse(errorResponse);
+    static ValidatePaymentError from(BraintreeApiErrorResponse errorResponse) {
+        return new ValidatePaymentError(errorResponse);
     }
 
-    ValidatePaymentErrorResponse(BraintreeApiErrorResponse errorResponse) {
+    ValidatePaymentError(BraintreeApiErrorResponse errorResponse) {
         contingencyUrl = parse3DSContingencyUrl(errorResponse);
     }
 

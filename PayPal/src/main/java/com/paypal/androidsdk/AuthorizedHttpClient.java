@@ -5,15 +5,10 @@ import android.text.TextUtils;
 import com.braintreepayments.api.BuildConfig;
 import com.braintreepayments.api.exceptions.BraintreeApiErrorResponse;
 import com.braintreepayments.api.exceptions.UnprocessableEntityException;
-import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.HttpClient;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Map;
 
 public class AuthorizedHttpClient extends HttpClient {
 

@@ -92,8 +92,8 @@ public class CheckoutClient {
                 String contingencyUrl = null;
 
                 if (exception instanceof BraintreeApiErrorResponse) {
-                    ValidatePaymentErrorResponse errorResponse =
-                        ValidatePaymentErrorResponse.from((BraintreeApiErrorResponse) exception);
+                    ValidatePaymentError errorResponse =
+                        ValidatePaymentError.from((BraintreeApiErrorResponse) exception);
                     contingencyUrl = errorResponse.getContingencyUrl();
                 }
 

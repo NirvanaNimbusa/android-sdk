@@ -13,7 +13,7 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [ Build.VERSION_CODES.P ])
-class ValidatePaymentErrorResponseTest {
+class ValidatePaymentErrorTest {
 
     private lateinit var braintreeApiErrorResponse: BraintreeApiErrorResponse
 
@@ -36,7 +36,7 @@ class ValidatePaymentErrorResponseTest {
         """.trimIndent()
         whenever(braintreeApiErrorResponse.errorResponse).thenReturn(responseBody)
 
-        val sut = ValidatePaymentErrorResponse.from(braintreeApiErrorResponse)
+        val sut = ValidatePaymentError.from(braintreeApiErrorResponse)
         assertEquals(sut.contingencyUrl, "https://sample.com")
     }
 }
