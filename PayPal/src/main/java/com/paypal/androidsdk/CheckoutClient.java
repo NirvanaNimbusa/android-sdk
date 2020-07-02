@@ -35,14 +35,14 @@ public class CheckoutClient {
     private BraintreeFragment braintreeFragment;
     private BrowserSwitchClient browserSwitchClient;
 
-    private UriBuilder uriBuilder;
+    private BrowserSwitchHelper browserSwitchHelper;
 
     public CheckoutClient(@NonNull String uat, @NonNull FragmentActivity activity) throws InvalidArgumentException {
         payPalUAT = (PayPalUAT) Authorization.fromString(uat);
         braintreeFragment = BraintreeFragment.newInstance(activity, payPalUAT.getBearer());
         httpClient = new AuthorizedHttpClient(payPalUAT.getPayPalURL(), payPalUAT.getBearer());
         browserSwitchClient = BrowserSwitchClient.newInstance(URL_SCHEME);
-        uriBuilder = new UriBuilder();
+        browserSwitchHelper = new BrowserSwitchHelper();
     }
 
     public void payWithCard(
@@ -69,7 +69,7 @@ public class CheckoutClient {
     private void validatePaymentMethodNonce(
         PaymentMethodNonce paymentMethodNonce, final String orderId,
         final FragmentActivity activity, final CheckoutListener listener) {
-        String path = uriBuilder.buildValidatePaymentUri(orderId, payPalUAT).toString();
+        String path = browserSwitchHelper.buildValidatePaymentUri(orderId, payPalUAT).toString();
         String data = ValidatePayment.createValidationPayload(
                 payPalUAT, paymentMethodNonce.getNonce(), true);
         httpClient.post(path, data, new HttpResponseCallback() {
@@ -98,12 +98,12 @@ public class CheckoutClient {
     }
 
     private void performCheckoutWithCard3DS(String contingencyUrl, FragmentActivity activity) {
-        Uri browserSwitchUrl = uriBuilder.buildVerifyThreeDSecureUri(contingencyUrl);
+        Uri browserSwitchUrl = browserSwitchHelper.buildVerifyThreeDSecureUri(contingencyUrl);
         browserSwitchClient.start(REQUEST_CODE_CARD_CHECKOUT, browserSwitchUrl, activity, createBrowserSwitchListener(activity));
     }
 
     public void payWithPayPal(String orderId, FragmentActivity activity) {
-        Uri browserSwitchUrl = uriBuilder.buildPayPalCheckoutUri(orderId, payPalUAT);
+        Uri browserSwitchUrl = browserSwitchHelper.buildPayPalCheckoutUri(orderId, payPalUAT);
         browserSwitchClient.start(REQUEST_CODE_PAYPAL_CHECKOUT, browserSwitchUrl, activity, createBrowserSwitchListener(activity));
     }
 

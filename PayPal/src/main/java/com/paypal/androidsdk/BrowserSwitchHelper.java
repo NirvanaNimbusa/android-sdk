@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.braintreepayments.api.models.PayPalUAT;
 
-class UriBuilder {
+class BrowserSwitchHelper {
 
     private static final String URL_SCHEME = "com.paypal.demo.braintree";
 

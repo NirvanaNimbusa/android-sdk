@@ -14,7 +14,7 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [ Build.VERSION_CODES.P ])
-class UriBuilderTest {
+class BrowserSwitchHelperTest {
 
     private lateinit var uat: PayPalUAT
 
@@ -25,7 +25,7 @@ class UriBuilderTest {
 
     @Test
     fun buildValidatePaymentUri() {
-        val sut = UriBuilder()
+        val sut = BrowserSwitchHelper()
         whenever(uat.payPalURL).thenReturn("https://sample.com")
 
         val result = sut.buildValidatePaymentUri("sampleOrderId", uat)
@@ -36,7 +36,7 @@ class UriBuilderTest {
 
     @Test
     fun buildVerifyThreeDSecureUri() {
-        val sut = UriBuilder()
+        val sut = BrowserSwitchHelper()
 
         val result = sut.buildVerifyThreeDSecureUri("https://contingency.com")
         val encodedRedirectUri = "com.paypal.demo.braintree%3A%2F%2Fx-callback-url%2Fpaypal-sdk%2Fcard-contingency"
@@ -46,7 +46,7 @@ class UriBuilderTest {
 
     @Test
     fun buildPayPalCheckoutUri_whenEnvIsProduction_returnsProductionUrl() {
-        val sut = UriBuilder()
+        val sut = BrowserSwitchHelper()
         whenever(uat.environment).thenReturn(PayPalUAT.Environment.PRODUCTION)
 
         val result = sut.buildPayPalCheckoutUri("sampleOrderId", uat)
@@ -60,7 +60,7 @@ class UriBuilderTest {
 
     @Test
     fun buildPayPalCheckoutUri_whenEnvIsSandbox_returnsSandboxUrl() {
-        val sut = UriBuilder()
+        val sut = BrowserSwitchHelper()
         whenever(uat.environment).thenReturn(PayPalUAT.Environment.SANDBOX)
 
         val result = sut.buildPayPalCheckoutUri("sampleOrderId", uat)
@@ -74,7 +74,7 @@ class UriBuilderTest {
 
     @Test
     fun buildPayPalCheckoutUri_whenEnvIsStaging_returnsStagingUrl() {
-        val sut = UriBuilder()
+        val sut = BrowserSwitchHelper()
         whenever(uat.environment).thenReturn(PayPalUAT.Environment.STAGING)
 
         val result = sut.buildPayPalCheckoutUri("sampleOrderId", uat)
