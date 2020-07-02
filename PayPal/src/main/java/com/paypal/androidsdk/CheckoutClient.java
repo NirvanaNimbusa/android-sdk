@@ -31,10 +31,9 @@ public class CheckoutClient {
 
     private PayPalUAT payPalUAT;
     private AuthorizedHttpClient httpClient;
-
     private BraintreeFragment braintreeFragment;
-    private BrowserSwitchClient browserSwitchClient;
 
+    private BrowserSwitchClient browserSwitchClient;
     private BrowserSwitchHelper browserSwitchHelper;
 
     public CheckoutClient(@NonNull String uat, @NonNull FragmentActivity activity) throws InvalidArgumentException {
