@@ -4,7 +4,6 @@ import android.util.ArrayMap;
 
 import androidx.annotation.NonNull;
 
-import com.braintreepayments.api.models.PayPalUAT;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import org.json.JSONObject;
@@ -14,14 +13,12 @@ import java.util.Map;
 
 class ValidatePaymentRequest {
 
-    private PayPalUAT uat;
     private String orderId;
     private PaymentMethodNonce paymentMethodNonce;
 
     private boolean threeDSecureRequested;
 
-    private ValidatePaymentRequest(@NonNull PayPalUAT uat, @NonNull String orderId, @NonNull PaymentMethodNonce paymentMethodNonce, boolean threeDSecureRequested) {
-        this.uat = uat;
+    private ValidatePaymentRequest(@NonNull String orderId, @NonNull PaymentMethodNonce paymentMethodNonce, boolean threeDSecureRequested) {
         this.orderId = orderId;
         this.paymentMethodNonce = paymentMethodNonce;
         this.threeDSecureRequested = threeDSecureRequested;
@@ -53,7 +50,6 @@ class ValidatePaymentRequest {
         private String orderId;
         private PaymentMethodNonce paymentMethodNonce;
         private boolean threeDSecureRequested;
-        private PayPalUAT uat;
 
         Builder orderId(@NonNull String value) {
             orderId = value;
@@ -70,13 +66,8 @@ class ValidatePaymentRequest {
             return this;
         }
 
-        Builder uat(@NonNull PayPalUAT value) {
-            uat = value;
-            return this;
-        }
-
         ValidatePaymentRequest build() {
-            return new ValidatePaymentRequest(uat, orderId, paymentMethodNonce, threeDSecureRequested);
+            return new ValidatePaymentRequest(orderId, paymentMethodNonce, threeDSecureRequested);
         }
     }
 }

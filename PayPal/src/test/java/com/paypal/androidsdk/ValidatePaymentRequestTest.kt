@@ -17,12 +17,10 @@ import org.robolectric.annotation.Config
 @Config(sdk = [ Build.VERSION_CODES.P ])
 class ValidatePaymentRequestTest {
 
-    private lateinit var uat: PayPalUAT
     private lateinit var paymentMethodNonce: PaymentMethodNonce
 
     @Before
     fun beforeEach() {
-        uat = mock()
         paymentMethodNonce = mock()
     }
 
@@ -31,7 +29,6 @@ class ValidatePaymentRequestTest {
         whenever(paymentMethodNonce.nonce).thenReturn("samplePaymentMethodNonce")
 
         val sut = ValidatePaymentRequest.Builder()
-                .uat(uat)
                 .orderId("sampleOrderId")
                 .paymentMethodNonce(paymentMethodNonce)
                 .threeDSecureRequested(true)
