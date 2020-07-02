@@ -89,17 +89,16 @@ public class CheckoutClient {
 
             @Override
             public void failure(Exception exception) {
-                if (exception instanceof BraintreeApiErrorResponse) {
-//                    ValidatePaymentErrorResponse errorResponse =
-//                        ValidatePaymentErrorResponse.from((BraintreeApiErrorResponse) exception);
+                String contingencyUrl = null;
 
-                    BraintreeApiErrorResponse errorResponse = (BraintreeApiErrorResponse) exception;
-                    String contingencyUrl = ValidatePayment.parse3DSContingencyUrl(errorResponse);
-                    if (contingencyUrl != null) {
-                        performCheckoutWithCard3DS(contingencyUrl, activity);
-                    } else {
-                        listener.onCheckoutComplete(exception, null);
-                    }
+                if (exception instanceof BraintreeApiErrorResponse) {
+                    ValidatePaymentErrorResponse errorResponse =
+                        ValidatePaymentErrorResponse.from((BraintreeApiErrorResponse) exception);
+                    contingencyUrl = errorResponse.getContingencyUrl();
+                }
+
+                if (contingencyUrl != null) {
+                    performCheckoutWithCard3DS(contingencyUrl, activity);
                 } else {
                     listener.onCheckoutComplete(exception, null);
                 }
