@@ -49,4 +49,30 @@ class ValidatePaymentRequestTest {
         )
         assertEquals(sut.httpBody, expectedResult.toString())
     }
+
+    @Test
+    fun getHttpRequestData_whenThreeDSecureNotRequested_omitsThreeDSecureContingency() {
+        whenever(paymentMethodNonce.nonce).thenReturn("samplePaymentMethodNonce")
+
+        val sut = ValidatePaymentRequest.Builder()
+                .orderId("sampleOrderId")
+                .paymentMethodNonce(paymentMethodNonce)
+                .threeDSecureRequested(false)
+                .build()
+
+        val expectedResult = JSONObject(
+            """
+            {
+                "payment_source": {
+                    "contingencies": [],
+                    "token": {
+                        "id": "samplePaymentMethodNonce",
+                        "type": "NONCE"
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+        assertEquals(sut.httpBody, expectedResult.toString())
+    }
 }
