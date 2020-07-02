@@ -1,9 +1,11 @@
 package com.paypal.androidsdk;
 
+import android.net.Uri;
 import android.util.ArrayMap;
 
 import androidx.annotation.NonNull;
 
+import com.braintreepayments.api.models.PayPalUAT;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import org.json.JSONObject;
@@ -13,20 +15,26 @@ import java.util.Map;
 
 class ValidatePaymentRequest {
 
+    private PayPalUAT uat;
     private String orderId;
     private PaymentMethodNonce paymentMethodNonce;
 
     private boolean threeDSecureRequested;
 
-    private ValidatePaymentRequest(@NonNull String orderId, @NonNull PaymentMethodNonce paymentMethodNonce, boolean threeDSecureRequested) {
+    private ValidatePaymentRequest(@NonNull PayPalUAT uat, @NonNull String orderId, @NonNull PaymentMethodNonce paymentMethodNonce, boolean threeDSecureRequested) {
+        this.uat = uat;
         this.orderId = orderId;
         this.paymentMethodNonce = paymentMethodNonce;
         this.threeDSecureRequested = threeDSecureRequested;
     }
 
-    String getHttpUrl() {
-        // TODO: implement
-        return null;
+    Uri getHttpUrl() {
+        String path = String.format("v2/checkout/orders/%s/validate-payment-method", orderId);
+        String baseUrl = uat.getPayPalURL();
+        return Uri.parse(baseUrl)
+                .buildUpon()
+                .appendEncodedPath(path)
+                .build();
     }
 
     String getHttpBody() {
@@ -50,6 +58,7 @@ class ValidatePaymentRequest {
         private String orderId;
         private PaymentMethodNonce paymentMethodNonce;
         private boolean threeDSecureRequested;
+        private PayPalUAT uat;
 
         Builder orderId(@NonNull String value) {
             orderId = value;
@@ -66,8 +75,13 @@ class ValidatePaymentRequest {
             return this;
         }
 
+        Builder uat(@NonNull PayPalUAT value) {
+            uat = value;
+            return this;
+        }
+
         ValidatePaymentRequest build() {
-            return new ValidatePaymentRequest(orderId, paymentMethodNonce, threeDSecureRequested);
+            return new ValidatePaymentRequest(uat, orderId, paymentMethodNonce, threeDSecureRequested);
         }
     }
 }
