@@ -1,5 +1,7 @@
 # PayPal Android SDK 
 
+[![Build Status](https://travis-ci.com/paypal/android-sdk.svg?branch=master)](https://travis-ci.com/paypal/android-sdk)
+
 ## Note
 This repository is currently in development. The PayPal Android SDK is not meant for public use. The repo is public for pilot merchants only.
 
@@ -11,13 +13,10 @@ PayPal Android provides a native SDK offering to current PayPal partners. It all
 This app depends on local development versions of both braintree-android and browser-switch-android to work.
 
 To run the app:
-1. Open a new terminal tab and cd to brower-switch-android project
-2. Checkout `decouple_browser_switch_from_android_fragment` branch
-3. Run `./scripts/start-local-development.sh` from the project root directory
-4. Open another terminal tab and cd to braintree-android project
-5. Checkout `add-card-tokenize-overload` branch
-6. Run `./script/start-local-development.sh` from the project root directory
-7. Open android-sdk PPCP project in Android studio
+1. Open a new terminal tab and cd to braintree-android project
+2. Checkout `add-card-tokenize-overload` branch
+3. Run `./script/start-local-development.sh` from the project root directory
+4. Open android-sdk PPCP project in Android studio
 
 The start-local-development scripts both start a gradle build that continuously watches the source of its respective project, rebuilds and deploys to local maven automatically.
 
