@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.braintreepayments.api.models.CardBuilder
+import com.braintreepayments.cardform.view.ExpirationDateEditText
 import com.paypal.androidsdk.CardCheckoutResult
 import com.paypal.androidsdk.CheckoutClient
 import com.paypal.androidsdk.CheckoutListener
@@ -27,6 +29,10 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
     private val uatLabel: TextView by lazy { findViewById<TextView>(R.id.uatTextView) }
     private val statusLabel: TextView by lazy { findViewById<TextView>(R.id.statusTextView) }
     private val orderIdLabel: TextView by lazy { findViewById<TextView>(R.id.orderIDTextView) }
+
+    private val cardNumberField: EditText by lazy { findViewById<EditText>(R.id.bt_card_form_card_number) }
+    private val expDateField: ExpirationDateEditText by lazy { findViewById<ExpirationDateEditText>(R.id.bt_card_form_expiration) }
+    private val cvvField: EditText by lazy { findViewById<EditText>(R.id.bt_card_form_cvv) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,12 +80,16 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
     fun initiateCardCheckout(view: View) {
         statusLabel.text = getString(R.string.checkout_initiated)
 
-        // trigger 3ds v1
+        val cardNumber = cardNumberField.text.replace("\\s+".toRegex(), "")
+        val expirationMonth = expDateField.month
+        val expirationYear = expDateField.year
+        val cvv = cvvField.text.toString()
+
         val cardBuilder = CardBuilder()
-                .cardNumber("4000000000000002")
-                .expirationMonth("01")
-                .expirationYear("2023")
-                .cvv("123")
+                .cardNumber(cardNumber)
+                .expirationMonth(expirationMonth)
+                .expirationYear(expirationYear)
+                .cvv(cvv)
 
         checkoutClient?.payWithCard(cardBuilder, orderId, this) { error, result ->
             var status: String? = null
