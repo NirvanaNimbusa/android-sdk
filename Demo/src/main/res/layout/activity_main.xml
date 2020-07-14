@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-    tools:context=".MainActivity">
+    android:focusableInTouchMode="true"
+    tools:context=".MainActivity"
+    >
 
     <TextView
         android:id="@+id/uatTextView"
@@ -21,7 +23,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
-
 
     <TextView
         android:id="@+id/orderIDTextView"
@@ -48,31 +49,102 @@
         app:layout_constraintVertical_bias="0.882"
         />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/card_field_wrapper"
+        tools:ignore="RtlCompat"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:labelFor="@+id/bt_card_form_card_number"
+        app:layout_constraintTop_toBottomOf="@+id/orderIDButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+
+        <com.braintreepayments.cardform.view.CardEditText
+            android:id="@id/bt_card_form_card_number"
+            android:layout_height="60dp"
+            android:layout_width="match_parent"
+            android:hint="Card Number"
+            android:inputType="number"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/exp_date_field_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/bt_card_form_expiration"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_field_wrapper"
+        app:layout_constraintEnd_toStartOf="@id/cvv_field_wrapper"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="4dp"
+        >
+
+        <com.braintreepayments.cardform.view.ExpirationDateEditText
+            android:layout_height="60dp"
+            android:layout_width="match_parent"
+            android:id="@id/bt_card_form_expiration"
+            android:hint="Exp. Date"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/cvv_field_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/bt_card_form_cvv"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toEndOf="@id/exp_date_field_wrapper"
+        app:layout_constraintTop_toBottomOf="@id/card_field_wrapper"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <com.braintreepayments.cardform.view.CvvEditText
+            android:layout_height="60dp"
+            android:layout_width="match_parent"
+            android:id="@+id/bt_card_form_cvv"
+            android:hint="CVV"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <TextView
         style="@style/TextAppearance.AppCompat.Title"
         android:id="@+id/checkoutHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/checkout_header"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/orderIDButton"
+        app:layout_constraintTop_toBottomOf="@id/cvv_field_wrapper"
         />
 
     <Button
         android:id="@+id/submitCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/card_button"
         android:onClick="initiateCardCheckout"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/submitPayPal"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintTop_toBottomOf="@id/checkoutHeader"
         />
 
@@ -81,14 +153,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/paypal_button"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="4dp"
         android:onClick="initiatePayPalCheckout"
         app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintTop_toBottomOf="@id/submitCard"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkoutHeader"
+        app:layout_constraintStart_toEndOf="@id/submitCard"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
     <Button

@@ -76,7 +76,6 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
 
         // trigger 3ds v1
         val cardBuilder = CardBuilder()
-                .cardholderName("Suzie Smith")
                 .cardNumber("4000000000000002")
                 .expirationMonth("01")
                 .expirationYear("2023")
