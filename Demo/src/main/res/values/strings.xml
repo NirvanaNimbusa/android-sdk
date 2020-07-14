@@ -28,7 +28,7 @@
     <string name="paypal_button">PayPal</string>
 
     <string name="order_id_fetching">Order ID: … fetching</string>
-    <string name="order_id_button">Get Order Id</string>
+    <string name="order_id_button">Create Order</string>
 
     <string name="error_uat_not_found">UAT Not Found</string>
     <string name="error_order_id_not_found">Order ID Not Found</string>
