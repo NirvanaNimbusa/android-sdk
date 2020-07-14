@@ -146,7 +146,6 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
         error?.let {
             status = getString(R.string.checkout_error, it.message)
         } ?: run {
-            var statusString: String
             if (result is CardCheckoutResult) {
                 status = getString(R.string.checkout_success, result.orderId)
             } else if (result is PayPalCheckoutResult) {
