@@ -51,6 +51,7 @@ public class CheckoutClient {
         Card.tokenize(braintreeFragment, cardBuilder, new PaymentMethodNonceCallback() {
             @Override
             public void success(PaymentMethodNonce paymentMethodNonce) {
+                listener.onPaymentMethodNonceCreated(paymentMethodNonce);
                 validatePaymentMethodNonce(paymentMethodNonce, orderId, activity, listener);
             }
 

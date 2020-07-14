@@ -6,9 +6,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.braintreepayments.api.models.CardBuilder
+import com.braintreepayments.api.models.PaymentMethodNonce
 import com.braintreepayments.cardform.view.ExpirationDateEditText
 import com.paypal.androidsdk.CardCheckoutResult
 import com.paypal.androidsdk.CheckoutClient
@@ -33,6 +35,8 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
     private val cardNumberField: EditText by lazy { findViewById<EditText>(R.id.bt_card_form_card_number) }
     private val expDateField: ExpirationDateEditText by lazy { findViewById<ExpirationDateEditText>(R.id.bt_card_form_expiration) }
     private val cvvField: EditText by lazy { findViewById<EditText>(R.id.bt_card_form_cvv) }
+
+    private val progressBar: ProgressBar by lazy { findViewById<ProgressBar>(R.id.loading_spinner)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +82,7 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
 
     @Suppress("UNUSED_PARAMETER")
     fun initiateCardCheckout(view: View) {
+        progressBar.visibility = View.VISIBLE
         statusLabel.text = getString(R.string.checkout_initiated)
 
         val cardNumber = cardNumberField.text.replace("\\s+".toRegex(), "")
@@ -91,20 +96,12 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
                 .expirationYear(expirationYear)
                 .cvv(cvv)
 
-        checkoutClient?.payWithCard(cardBuilder, orderId, this) { error, result ->
-            var status: String? = null
-            error?.let {
-                status = getString(R.string.checkout_error, it.message)
-            } ?: run {
-                val orderId = (result as? CardCheckoutResult)?.orderId
-                status = getString(R.string.checkout_success, orderId)
-            }
-            statusLabel.text = status
-        }
+        checkoutClient?.payWithCard(cardBuilder, orderId, this, this)
     }
 
     @Suppress("UNUSED_PARAMETER")
     fun initiatePayPalCheckout(view: View?) {
+        progressBar.visibility = View.VISIBLE
         checkoutClient?.payWithPayPal(this.orderId, this)
     }
 
@@ -123,13 +120,37 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
                 fetchUAT()
                 this.orderId = null
                 orderIdLabel.text = getString(R.string.order_id_placeholder)
+                statusLabel.text = getString((R.string.checkout_placeholder))
+                progressBar.visibility = View.INVISIBLE
+
+                cardNumberField.text = null
+                expDateField.text = null
+                cvvField.text = null
+
                 super.onOptionsItemSelected(item)
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    override fun onPaymentMethodNonceCreated(paymentMethodNonce: PaymentMethodNonce?) {
+        val oldStatus = statusLabel.text
+        val nonceString = paymentMethodNonce!!.nonce
+        val newStatus = "$oldStatus\n$nonceString"
+        statusLabel.text = newStatus
+    }
+
     override fun onCheckoutComplete(error: Exception?, result: CheckoutResult?) {
-        // TODO: process result
+        progressBar.visibility = View.INVISIBLE
+
+        // print error message or order id on success
+        var status: String? = null
+        error?.let {
+            status = getString(R.string.checkout_error, it.message)
+        } ?: run {
+            val orderId = (result as? CardCheckoutResult)?.orderId
+            status = getString(R.string.checkout_success, orderId)
+        }
+        statusLabel.text = status
     }
 }

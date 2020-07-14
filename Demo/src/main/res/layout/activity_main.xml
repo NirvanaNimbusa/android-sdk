@@ -175,6 +175,7 @@
         android:indeterminateTintMode="src_atop"
         android:indeterminateTint="#3399CC"
         android:layout_gravity="center"
+        android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@id/submitPayPal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

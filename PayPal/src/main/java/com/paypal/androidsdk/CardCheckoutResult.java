@@ -8,12 +8,16 @@ public class CardCheckoutResult implements CheckoutResult {
 
     public static CardCheckoutResult newInstance(String orderId) {
         // TODO: implement
-        return new CardCheckoutResult();
+        return new CardCheckoutResult(orderId);
     }
 
     public static CardCheckoutResult from(Uri uri) {
         // TODO: implement
-        return new CardCheckoutResult();
+        return new CardCheckoutResult(null);
+    }
+
+    CardCheckoutResult(String orderId) {
+        this.orderId = orderId;
     }
 
     public String getOrderId() {
