@@ -51,20 +51,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         />
 
-    <TextView
-        android:id="@+id/statusTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="@string/checkout_placeholder"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/submitCard"
-        app:layout_constraintVertical_bias="0.882"
-        />
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/card_field_wrapper"
         tools:ignore="RtlCompat"
@@ -177,6 +163,34 @@
         app:layout_constraintTop_toBottomOf="@id/checkoutHeader"
         app:layout_constraintStart_toEndOf="@id/submitCard"
         app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminateOnly="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="#3399CC"
+        android:layout_gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/submitPayPal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/statusTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/checkout_placeholder"
+        app:layout_constraintTop_toBottomOf="@id/loading_spinner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
