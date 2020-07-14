@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
         error?.let {
             status = getString(R.string.checkout_error, it.message)
         } ?: run {
-            if (result is CardCheckoutResult) {
+            if (result is CardCheckoutResult && result.orderId != null) {
                 status = getString(R.string.checkout_success, result.orderId)
             } else if (result is PayPalCheckoutResult) {
                 val token = result.token
@@ -154,6 +154,9 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
                 status = "Token: $token\nPayer Id: $payerId"
             }
         }
-        statusLabel.text = status
+
+        if (status != null) {
+            statusLabel.text = status
+        }
     }
 }
