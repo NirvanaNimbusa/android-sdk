@@ -9,13 +9,11 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.braintreepayments.api.Card
 import com.braintreepayments.api.models.CardBuilder
 import com.braintreepayments.api.models.PaymentMethodNonce
 import com.braintreepayments.cardform.view.ExpirationDateEditText
-import com.paypal.androidsdk.CardCheckoutResult
-import com.paypal.androidsdk.CheckoutClient
-import com.paypal.androidsdk.CheckoutListener
-import com.paypal.androidsdk.CheckoutResult
+import com.paypal.androidsdk.*
 import com.paypal.demo.models.Amount
 import com.paypal.demo.models.OrderRequest
 import com.paypal.demo.models.Payee
@@ -148,8 +146,14 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
         error?.let {
             status = getString(R.string.checkout_error, it.message)
         } ?: run {
-            val orderId = (result as? CardCheckoutResult)?.orderId
-            status = getString(R.string.checkout_success, orderId)
+            var statusString: String
+            if (result is CardCheckoutResult) {
+                status = getString(R.string.checkout_success, result.orderId)
+            } else if (result is PayPalCheckoutResult) {
+                val token = result.token
+                val payerId = result.payerId
+                status = "Token: $token\nPayer Id: $payerId"
+            }
         }
         statusLabel.text = status
     }

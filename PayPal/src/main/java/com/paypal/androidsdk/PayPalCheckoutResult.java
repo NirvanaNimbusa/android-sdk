@@ -19,4 +19,20 @@ public class PayPalCheckoutResult implements CheckoutResult {
         opType = uri.getQueryParameter("opType");
         token = uri.getQueryParameter("token");
     }
+
+    public String getPayerId() {
+        return payerId;
+    }
+
+    public String getIntent() {
+        return intent;
+    }
+
+    public String getOpType() {
+        return opType;
+    }
+
+    public String getToken() {
+        return token;
+    }
 }
