@@ -35,4 +35,10 @@ public class PayPalCheckoutResult implements CheckoutResult {
     public String getToken() {
         return token;
     }
+
+    @Override
+    public String getOrderId() {
+        // TODO: allow metadata to be forwarded via browser switch request
+        return null;
+    }
 }

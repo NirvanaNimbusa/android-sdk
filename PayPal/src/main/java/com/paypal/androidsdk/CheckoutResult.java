@@ -1,3 +1,5 @@
 package com.paypal.androidsdk;
 
-public interface CheckoutResult {}
+public interface CheckoutResult {
+    String getOrderId();
+}
