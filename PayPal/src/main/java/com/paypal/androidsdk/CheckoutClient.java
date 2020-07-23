@@ -45,9 +45,9 @@ public class CheckoutClient {
     }
 
     public void payWithCard(
-        CardBuilder cardBuilder, final String orderId, final FragmentActivity activity,
-        final CheckoutListener listener
+        CardBuilder cardBuilder, final String orderId, final FragmentActivity activity
     ) {
+        final CheckoutListener listener = (CheckoutListener) activity;
         Card.tokenize(braintreeFragment, cardBuilder, new PaymentMethodNonceCallback() {
             @Override
             public void success(PaymentMethodNonce paymentMethodNonce) {

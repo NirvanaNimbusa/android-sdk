@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(), CheckoutListener {
                 .expirationYear(expirationYear)
                 .cvv(cvv)
 
-        checkoutClient?.payWithCard(cardBuilder, orderId, this, this)
+        checkoutClient?.payWithCard(cardBuilder, orderId, this)
     }
 
     @Suppress("UNUSED_PARAMETER")
